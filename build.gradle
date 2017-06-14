@@ -1,20 +1,25 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'com.github.ben-manes.versions'
 
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // Dependency versions report (https://github.com/ben-manes/gradle-versions-plugin)
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
+        // Dex method count (https://github.com/KeepSafe/dexcount-gradle-plugin)
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.4'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
 }
 
