@@ -1,4 +1,5 @@
-include ':sample-app', ':mvp-compiler'
+include ':sample-app'
+include ':mvp-compiler'
 include ':mvp-library'
 
 rootProject.name = 'ximity-dagger-mvp'

@@ -25,6 +25,8 @@ android {
 dependencies {
     /** Build dependencies **/
     compile deps.support.appcompatv7
+    compile project(':mvp-library')
+    annotationProcessor project(':mvp-compiler')
 
     /** Test dependencies **/
     testCompile deps.junit

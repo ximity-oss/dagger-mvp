@@ -1,3 +1,5 @@
+import org.gradle.internal.jvm.Jvm
+
 apply plugin: 'java'
 
 sourceCompatibility = "1.7"
@@ -5,9 +7,11 @@ targetCompatibility = "1.7"
 
 dependencies {
     /** Build dependencies **/
+    compile project(':mvp-library')
     compile deps.auto.common
     compile deps.javapoet
     compileOnly deps.auto.service
+    compileOnly files(Jvm.current().getToolsJar())
 
     /** Test dependencies **/
     testCompile deps.junit

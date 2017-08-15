@@ -15,6 +15,9 @@ android {
 }
 
 dependencies {
+    /** Build dependencies **/
+    compile deps.support.supportv4
+
     /** Test dependencies **/
     testCompile deps.junit
 }

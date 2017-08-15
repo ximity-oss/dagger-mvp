@@ -32,6 +32,7 @@ buildscript {
                     'gradlePlugin': "com.android.tools.build:gradle:${versions.androidPlugin}",
             ],
             'support'     : [
+                    'supportv4': "com.android.support:support-v4:${versions.supportLibrary}",
                     'appcompatv7': "com.android.support:appcompat-v7:${versions.supportLibrary}",
                     'compat'     : "com.android.support:support-compat:${versions.supportLibrary}",
                     'annotations': "com.android.support:support-annotations:${versions.supportLibrary}",
