@@ -18,8 +18,11 @@ android {
 }
 
 dependencies {
+    /** Module dependencies **/
+    api project(':mvp-annotations')
+
     /** Build dependencies **/
-    implementation deps.support.supportv4
+    api deps.support.appcompatv7
 
     /** Test dependencies **/
     testImplementation deps.junit

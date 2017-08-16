@@ -1,3 +1,5 @@
+import org.gradle.internal.jvm.Jvm
+
 apply plugin: 'java-library'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
@@ -9,9 +11,9 @@ dependencies {
 
     /** Build dependencies **/
     implementation deps.auto.common
-    implementation deps.javapoet
+    api deps.javapoet
     compileOnly deps.auto.service
-    compileOnly files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
+    compileOnly files(Jvm.current().getToolsJar())
 
     /** Test dependencies **/
     testCompile deps.junit

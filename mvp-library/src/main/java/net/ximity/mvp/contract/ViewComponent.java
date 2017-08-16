@@ -1,4 +1,4 @@
-package net.ximity.mvp;
+package net.ximity.mvp.contract;
 
 /**
  * Scoped component view contract

@@ -1,4 +1,4 @@
-package net.ximity.mvp;
+package net.ximity.mvp.contract;
 
 /**
  * Authenticated view contract for all view the requires an authenticated user for handling authentication errors

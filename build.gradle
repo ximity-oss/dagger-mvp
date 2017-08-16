@@ -35,7 +35,6 @@ buildscript {
                     'dexcount': 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.3',
             ],
             'support'     : [
-                    'supportv4'  : "com.android.support:support-v4:${versions.support}",
                     'appcompatv7': "com.android.support:appcompat-v7:${versions.support}",
                     'compat'     : "com.android.support:support-compat:${versions.support}",
                     'annotations': "com.android.support:support-annotations:${versions.support}",

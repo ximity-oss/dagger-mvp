@@ -1,4 +1,4 @@
-package net.ximity.mvp;
+package net.ximity.mvp.contract;
 
 /**
  * View module contract to provide view module with {@link ViewPresenter}

@@ -13,5 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
 public @interface MvpComponent {
-    String value() default "";
+    /**
+     * Optional generated MVP component bind interface name.
+     */
+    String value() default "MvpBindings";
 }

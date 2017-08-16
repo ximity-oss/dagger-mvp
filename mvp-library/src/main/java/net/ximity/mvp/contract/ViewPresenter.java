@@ -1,4 +1,4 @@
-package net.ximity.mvp;
+package net.ximity.mvp.contract;
 
 import android.app.Activity;
 import android.os.Bundle;

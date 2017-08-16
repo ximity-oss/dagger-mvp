@@ -80,12 +80,12 @@ public final class MvpProcessor extends AbstractProcessor {
         }
 
         if (elements.size() > 1) {
-            Util.error("Only one component can be annotated with @MvpMainComponent");
+            Util.error("Only one component can be annotated with @MvpComponent");
         }
 
         for (Element element : elements) {
             if (element.getKind() != ElementKind.INTERFACE) {
-                Util.error("@MvpMainComponent can only be used for interfaces!");
+                Util.error("@MvpComponent can only be used for interfaces!");
                 return false;
             }
 
@@ -99,9 +99,9 @@ public final class MvpProcessor extends AbstractProcessor {
 
     private boolean generateBaseComponent(TypeElement element) {
         final MvpComponent component = element.getAnnotation(MvpComponent.class);
-        final String componentName = Util.isEmpty(component.value()) ? "MvpBindings" : component.value();
+        final String componentName = component.value();
         Util.note("Generating " + componentName + "...");
-        final TypeSpec.Builder builder = TypeSpec.interfaceBuilder(Util.isEmpty(componentName) ? "MvpBindings" : componentName)
+        final TypeSpec.Builder builder = TypeSpec.interfaceBuilder(componentName)
                 .addMethod(MethodSpec.methodBuilder("bind")
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .addParameter(ClassName.get("android.app", "Activity"), "activity")

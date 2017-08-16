@@ -1,4 +1,4 @@
-package net.ximity.mvp;
+package net.ximity.mvp.contract;
 
 /**
  * Marker interface for all views using the MVP pattern
