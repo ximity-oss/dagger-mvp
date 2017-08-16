@@ -8,5 +8,5 @@ import net.ximity.annotation.MvpComponent;
  * @author by Emarc Magtanong on 2017/08/16.
  */
 @MvpComponent
-public interface TestComponent extends MvpBindings {
+public interface TestComponent {
 }

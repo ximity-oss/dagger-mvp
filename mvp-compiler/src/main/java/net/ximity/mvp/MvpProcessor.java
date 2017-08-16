@@ -98,9 +98,9 @@ public final class MvpProcessor extends AbstractProcessor {
     }
 
     private boolean generateBaseComponent(TypeElement element) {
-        Util.note("Generating MvpDaggerComponent");
         final MvpComponent component = element.getAnnotation(MvpComponent.class);
-        final String componentName = component.value();
+        final String componentName = Util.isEmpty(component.value()) ? "MvpBindings" : component.value();
+        Util.note("Generating " + componentName + "...");
         final TypeSpec.Builder builder = TypeSpec.interfaceBuilder(Util.isEmpty(componentName) ? "MvpBindings" : componentName)
                 .addMethod(MethodSpec.methodBuilder("bind")
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
