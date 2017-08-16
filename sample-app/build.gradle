@@ -10,8 +10,8 @@ android {
         minSdkVersion versions.min
         targetSdkVersion versions.compile
 
-        versionCode 1
-        versionName "0.0.1"
+        versionCode versions.code
+        versionName versions.name
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -25,7 +25,6 @@ android {
 dependencies {
     /** Module dependencies **/
     annotationProcessor project(':mvp-compiler')
-    compileOnly project(':mvp-annotations')
     implementation project(':mvp-library')
 
     /** Build dependencies **/
