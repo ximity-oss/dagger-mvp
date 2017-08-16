@@ -3,7 +3,6 @@ apply plugin: 'com.github.ben-manes.versions'
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://maven.google.com' }
     }
 
     dependencies {
@@ -12,14 +11,17 @@ buildscript {
     }
 
     ext.versions = [
-            'minSdk'        : 18,
-            'compileSdk'    : 25,
-            'buildTools'    : '25.0.3',
+            'code'   : 1,
+            'name'   : '0.0.1',
+            'min'    : 15,
+            'compile': 26,
+            'build'  : '26.0.1',
+            'support': '26.0.1',
+            'tools'  : '26.0.0-beta2',
+            'plugin' : '3.0.0-beta2',
 
-            'supportLibrary': '25.3.1',
-            'androidPlugin' : '2.3.3',
-
-            'release'       : '1.0.0',
+            'dagger' : '2.11',
+            'javax'  : '1.3',
     ]
 
     ext.groups = [
@@ -27,30 +29,35 @@ buildscript {
     ]
 
     ext.deps = [
-            android       : [
-                    'runtime'     : 'com.google.android:android:4.1.1.4',
-                    'gradlePlugin': "com.android.tools.build:gradle:${versions.androidPlugin}",
+            plugin        : [
+                    'runtime' : 'com.google.android:android:4.1.1.4',
+                    'android' : "com.android.tools.build:gradle:${versions.plugin}",
+                    'dexcount': 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.3',
             ],
             'support'     : [
-                    'supportv4': "com.android.support:support-v4:${versions.supportLibrary}",
-                    'appcompatv7': "com.android.support:appcompat-v7:${versions.supportLibrary}",
-                    'compat'     : "com.android.support:support-compat:${versions.supportLibrary}",
-                    'annotations': "com.android.support:support-annotations:${versions.supportLibrary}",
+                    'supportv4'  : "com.android.support:support-v4:${versions.support}",
+                    'appcompatv7': "com.android.support:appcompat-v7:${versions.support}",
+                    'compat'     : "com.android.support:support-compat:${versions.support}",
+                    'annotations': "com.android.support:support-annotations:${versions.support}",
                     'test'       : [
                             'runner': 'com.android.support.test:runner:0.5',
                     ],
             ],
             'lint'        : [
-                    'core'  : "com.android.tools.lint:lint:${versions.androidTools}",
-                    'api'   : "com.android.tools.lint:lint-api:${versions.androidTools}",
-                    'checks': "com.android.tools.lint:lint-checks:${versions.androidTools}",
-                    'tests' : "com.android.tools.lint:lint-tests:${versions.androidTools}",
+                    'core'  : "com.android.tools.lint:lint:${versions.tools}",
+                    'api'   : "com.android.tools.lint:lint-api:${versions.tools}",
+                    'checks': "com.android.tools.lint:lint-checks:${versions.tools}",
+                    'tests' : "com.android.tools.lint:lint-tests:${versions.tools}",
             ],
-            dexcount      : 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.0',
+            dagger        : [
+                    'library'    : "com.google.dagger:dagger:${versions.dagger}",
+                    'compiler'   : "com.google.dagger:dagger-compiler:${versions.dagger}",
+                    'annotations': "javax.annotation:javax.annotation-api:${versions.javax}",
+            ],
             javapoet      : 'com.squareup:javapoet:1.9.0',
             javaparser    : 'com.github.javaparser:javaparser-core:2.4.0',
             junit         : 'junit:junit:4.12',
-            truth         : 'com.google.truth:truth:0.33',
+            truth         : 'com.google.truth:truth:0.34',
             robolectric   : 'org.robolectric:robolectric:3.1.2',
             compiletesting: 'com.google.testing.compile:compile-testing:0.11',
             'auto'        : [
@@ -65,21 +72,22 @@ subprojects {
     version = versions.release
 
     repositories {
+        google()
         jcenter()
-        maven { url 'https://maven.google.com' }
         mavenCentral()
     }
 
     buildscript {
         repositories {
+            google()
             jcenter()
-            maven { url 'https://maven.google.com' }
             mavenCentral()
         }
+
         dependencies {
-            classpath deps.android.gradlePlugin
+            classpath deps.plugin.android
             // Dex method count (https://github.com/KeepSafe/dexcount-gradle-plugin)
-            classpath deps.dexcount
+            classpath deps.plugin.dexcount
         }
     }
 }

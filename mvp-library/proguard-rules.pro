@@ -1,1 +1,0 @@
-# TODO Add proguard rules for mvp library

@@ -1,14 +1,17 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
+    compileSdkVersion versions.compile
+    buildToolsVersion versions.build
 
     defaultConfig {
-        minSdkVersion versions.minSdk
+        minSdkVersion versions.min
+        targetSdkVersion versions.compile
 
-        consumerProguardFiles 'proguard-rules.pro'
+        versionCode versions.code
+        versionName versions.name
+
+        consumerProguardFiles file('./proguard-rules').listFiles()
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -16,8 +19,8 @@ android {
 
 dependencies {
     /** Build dependencies **/
-    compile deps.support.supportv4
+    implementation deps.support.supportv4
 
     /** Test dependencies **/
-    testCompile deps.junit
+    testImplementation deps.junit
 }

@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
+    compileSdkVersion versions.compile
+    buildToolsVersion versions.build
 
     defaultConfig {
         applicationId "net.ximity.sample"
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.compileSdk
+        minSdkVersion versions.min
+        targetSdkVersion versions.compile
 
         versionCode 1
         versionName "0.0.1"
@@ -23,11 +23,18 @@ android {
 }
 
 dependencies {
-    /** Build dependencies **/
-    compile deps.support.appcompatv7
-    compile project(':mvp-library')
+    /** Module dependencies **/
     annotationProcessor project(':mvp-compiler')
+    compileOnly project(':mvp-annotations')
+    implementation project(':mvp-library')
+
+    /** Build dependencies **/
+    implementation deps.support.appcompatv7
+
+    compileOnly deps.dagger.annotations
+    implementation deps.dagger.library
+    annotationProcessor deps.dagger.compiler
 
     /** Test dependencies **/
-    testCompile deps.junit
+    testImplementation deps.junit
 }
