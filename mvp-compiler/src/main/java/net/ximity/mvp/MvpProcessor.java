@@ -1,19 +1,18 @@
 package net.ximity.mvp;
 
-import com.google.auto.common.MoreElements;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import net.ximity.annotation.MvpComponent;
+import net.ximity.annotation.MvpContract;
 
-import java.io.IOException;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -24,8 +23,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
+
+import static com.google.auto.common.MoreElements.getPackage;
 
 @SupportedAnnotationTypes({
         "net.ximity.annotation.MvpComponent",
@@ -34,29 +33,16 @@ import javax.lang.model.util.Types;
 @AutoService(Processor.class)
 public final class MvpProcessor extends AbstractProcessor {
 
-    private Elements elementUtils;
-    private Types typeUtils;
-    private Filer filer;
-
     private boolean HALT = false;
-    private int round = -1;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        elementUtils = processingEnv.getElementUtils();
-        typeUtils = processingEnv.getTypeUtils();
-        filer = processingEnv.getFiler();
+        Util.init(processingEnv);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        round++;
-
-        if (round == 0) {
-            Util.init(processingEnv);
-        }
-
         if (!processAnnotations(roundEnv)) {
             return HALT;
         }
@@ -69,7 +55,43 @@ public final class MvpProcessor extends AbstractProcessor {
     }
 
     private boolean processAnnotations(RoundEnvironment roundEnv) {
-        return processMainComponent(roundEnv);
+        return processMvpModules(roundEnv) &&
+                processMvpSubcomponents(roundEnv) &&
+                processMainComponent(roundEnv);
+    }
+
+    private boolean processMvpModules(RoundEnvironment roundEnv) {
+        final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(MvpContract.class);
+
+        if (Util.isEmpty(elements)) {
+            return true;
+        }
+
+        for (Element element : elements) {
+            if (element.getKind() != ElementKind.INTERFACE) {
+                Util.error(MvpContract.class.getSimpleName() + " can only be used for interfaces!");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean processMvpSubcomponents(RoundEnvironment roundEnv) {
+        final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(MvpContract.class);
+
+        if (Util.isEmpty(elements)) {
+            return true;
+        }
+
+        for (Element element : elements) {
+            if (element.getKind() != ElementKind.INTERFACE) {
+                Util.error(MvpContract.class.getSimpleName() + " can only be used for interfaces!");
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean processMainComponent(RoundEnvironment roundEnv) {
@@ -80,12 +102,16 @@ public final class MvpProcessor extends AbstractProcessor {
         }
 
         if (elements.size() > 1) {
-            Util.error("Only one component can be annotated with @MvpComponent");
+            Util.error("Only one component can be annotated with " + MvpComponent.class.getSimpleName() + "!");
         }
 
         for (Element element : elements) {
             if (element.getKind() != ElementKind.INTERFACE) {
-                Util.error("@MvpComponent can only be used for interfaces!");
+                Util.error(MvpComponent.class.getSimpleName() + " can only be used for interfaces!");
+                return false;
+            }
+
+            if (!generateBaseViews((TypeElement) element)) {
                 return false;
             }
 
@@ -97,26 +123,39 @@ public final class MvpProcessor extends AbstractProcessor {
         return true;
     }
 
+    private boolean generateBaseViews(TypeElement element) {
+        Util.note(element.getSimpleName().toString());
+        Util.note(getPackage(element).toString());
+
+        final String packageName = getPackage(element).toString();
+
+        ClassName activityView = ClassName.get("net.ximity.mvp.dagger", "DaggerActivity");
+        final TypeSpec.Builder activityBuilder = TypeSpec.classBuilder("ActivityView")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(activityView, ClassName.get(element)))
+                .addSuperinterface(ClassName.get("net.ximity.mvp.contract", "MvpView"));
+
+        Util.writeJavaFile(JavaFile.builder(packageName, activityBuilder.build())
+                .build(), "ActivityView");
+
+        return true;
+    }
+
     private boolean generateBaseComponent(TypeElement element) {
         final MvpComponent component = element.getAnnotation(MvpComponent.class);
         final String componentName = component.value();
-        Util.note("Generating " + componentName + "...");
-        final TypeSpec.Builder builder = TypeSpec.interfaceBuilder(componentName)
+        final TypeSpec mvpBindings = TypeSpec.interfaceBuilder(componentName)
                 .addMethod(MethodSpec.methodBuilder("bind")
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .addParameter(ClassName.get("android.app", "Activity"), "activity")
-                        .build());
-
-        final TypeSpec newClass = builder.build();
-        final String packageName = MoreElements.getPackage(element).getQualifiedName().toString();
-        final JavaFile javaFile = JavaFile.builder(packageName, newClass)
+                        .build())
                 .build();
 
-        try {
-            javaFile.writeTo(filer);
-        } catch (IOException e) {
-            Util.warn("Unable to generate file for");
-        }
+        final String packageName = getPackage(element).getQualifiedName().toString();
+        final JavaFile output = JavaFile.builder(packageName, mvpBindings)
+                .build();
+
+        Util.writeJavaFile(output, componentName);
         return true;
     }
 }
