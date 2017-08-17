@@ -2,14 +2,17 @@ package net.ximity.mvp;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import net.ximity.annotation.MvpComponent;
 import net.ximity.annotation.MvpContract;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -23,17 +26,22 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 import static com.google.auto.common.MoreElements.getPackage;
+import static net.ximity.mvp.Util.error;
+import static net.ximity.mvp.Util.writeJavaFile;
 
 @SupportedAnnotationTypes({
         "net.ximity.annotation.MvpComponent",
+        "net.ximity.annotation.MvpContract",
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @AutoService(Processor.class)
 public final class MvpProcessor extends AbstractProcessor {
 
     private final String VIEW_PACKAGE = "net.ximity.mvp.view";
+    private final String CONTRACT_PACKAGE = "net.ximity.mvp.contract";
     private boolean HALT = false;
 
     @Override
@@ -70,10 +78,100 @@ public final class MvpProcessor extends AbstractProcessor {
 
         for (Element element : elements) {
             if (element.getKind() != ElementKind.INTERFACE) {
-                Util.error(MvpContract.class.getSimpleName() + " can only be used for interfaces!");
+                error(MvpContract.class.getSimpleName() + " can only be used for interfaces!");
+                return false;
+            }
+
+            if (!generateMvpModule((TypeElement) element)) {
                 return false;
             }
         }
+
+        return true;
+    }
+
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
+    private boolean generateMvpModule(TypeElement element) {
+        final String packageName = getPackage(element).toString();
+        final MvpContract contract = element.getAnnotation(MvpContract.class);
+
+        TypeElement view = Util.getView(element);
+        List<TypeMirror> viewImplements = (List<TypeMirror>) view.getInterfaces();
+        TypeElement presenter = Util.getPresenter(element);
+        List<TypeMirror> presenterImplements = (List<TypeMirror>) presenter.getInterfaces();
+
+        String moduleClassName = Util.isEmpty(contract.moduleName()) ? element.getSimpleName().toString() + "Module" :
+                contract.moduleName();
+
+        if (viewImplements.isEmpty()) {
+            error(view.getSimpleName().toString() + " does not implement "
+                    + element.getSimpleName() + " view contract!");
+            return false;
+        }
+
+        if (presenterImplements.isEmpty()) {
+            error(presenter.getSimpleName().toString() + " does not implement "
+                    + element.getSimpleName() + " presenter contract!");
+            return false;
+        }
+
+        TypeElement viewInterface = null;
+        for (TypeMirror typeMirror : viewImplements) {
+            TypeElement currentInterface = (TypeElement) processingEnv.getTypeUtils().asElement(typeMirror);
+            if (element.getEnclosedElements().contains(currentInterface)) {
+                viewInterface = currentInterface;
+            } else {
+                error(view.getSimpleName().toString() + " does not implement "
+                        + element.getSimpleName() + " view contract!");
+                return false;
+            }
+        }
+
+        TypeElement presenterInterface = null;
+        for (TypeMirror typeMirror : presenterImplements) {
+            TypeElement currentInterface = (TypeElement) processingEnv.getTypeUtils().asElement(typeMirror);
+            if (element.getEnclosedElements().contains(currentInterface)) {
+                presenterInterface = currentInterface;
+            } else {
+                error(presenter.getSimpleName().toString() + " does not implement "
+                        + element.getSimpleName() + " presenter contract!");
+                return false;
+            }
+        }
+
+        final TypeSpec.Builder moduleBuilder = TypeSpec.classBuilder(moduleClassName)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addAnnotation(ClassName.get("dagger", "Module"))
+                .addField(FieldSpec.builder(ClassName.get(viewInterface), "view")
+                        .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+                        .build())
+                .addMethod(MethodSpec.constructorBuilder()
+                        .addParameter(ParameterSpec.builder(ClassName.get(viewInterface), "view")
+                                .addAnnotation(ClassName.get("android.support.annotation", "NonNull"))
+                                .build())
+                        .addModifiers(Modifier.PUBLIC)
+                        .addStatement("this.$N = $N", "view", "view")
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("providesView")
+                        .addAnnotation(ClassName.get("dagger", "Provides"))
+                        .returns(ClassName.get(viewInterface))
+                        .addStatement("return this.$N", "view")
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("providesPresenter")
+                        .addAnnotation(ClassName.get("dagger", "Provides"))
+                        .returns(ClassName.get(presenterInterface))
+                        .addParameter(ClassName.get(presenter), "impl")
+                        .addStatement("return $N", "impl")
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("providesViewPresenter")
+                        .addAnnotation(ClassName.get("dagger", "Provides"))
+                        .returns(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"))
+                        .addParameter(ClassName.get(presenter), "impl")
+                        .addStatement("return $N", "impl")
+                        .build());
+
+        writeJavaFile(JavaFile.builder(packageName, moduleBuilder.build())
+                .build(), moduleClassName);
 
         return true;
     }
@@ -87,11 +185,19 @@ public final class MvpProcessor extends AbstractProcessor {
 
         for (Element element : elements) {
             if (element.getKind() != ElementKind.INTERFACE) {
-                Util.error(MvpContract.class.getSimpleName() + " can only be used for interfaces!");
+                error(MvpContract.class.getSimpleName() + " can only be used for interfaces!");
+                return false;
+            }
+
+            if (!generateMvpComponent((TypeElement) element)) {
                 return false;
             }
         }
 
+        return true;
+    }
+
+    private boolean generateMvpComponent(TypeElement element) {
         return true;
     }
 
@@ -103,12 +209,12 @@ public final class MvpProcessor extends AbstractProcessor {
         }
 
         if (elements.size() > 1) {
-            Util.error("Only one component can be annotated with " + MvpComponent.class.getSimpleName() + "!");
+            error("Only one component can be annotated with " + MvpComponent.class.getSimpleName() + "!");
         }
 
         for (Element element : elements) {
             if (element.getKind() != ElementKind.INTERFACE) {
-                Util.error(MvpComponent.class.getSimpleName() + " can only be used for interfaces!");
+                error(MvpComponent.class.getSimpleName() + " can only be used for interfaces!");
                 return false;
             }
 
@@ -132,7 +238,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .superclass(ParameterizedTypeName.get(activityView, ClassName.get(element)));
 
-        Util.writeJavaFile(JavaFile.builder(packageName, activityBuilder.build())
+        writeJavaFile(JavaFile.builder(packageName, activityBuilder.build())
                 .build(), "ActivityView");
 
         final ClassName fragmentView = ClassName.get(VIEW_PACKAGE, "BaseFragmentView");
@@ -140,7 +246,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .superclass(ParameterizedTypeName.get(fragmentView, ClassName.get(element)));
 
-        Util.writeJavaFile(JavaFile.builder(packageName, fragmentBuilder.build())
+        writeJavaFile(JavaFile.builder(packageName, fragmentBuilder.build())
                 .build(), "FragmentView");
 
         final ClassName dialogView = ClassName.get(VIEW_PACKAGE, "BaseDialogView");
@@ -148,7 +254,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .superclass(ParameterizedTypeName.get(dialogView, ClassName.get(element)));
 
-        Util.writeJavaFile(JavaFile.builder(packageName, dialogBuilder.build())
+        writeJavaFile(JavaFile.builder(packageName, dialogBuilder.build())
                 .build(), "DialogView");
 
         return true;
@@ -168,7 +274,7 @@ public final class MvpProcessor extends AbstractProcessor {
         final JavaFile output = JavaFile.builder(packageName, mvpBindings)
                 .build();
 
-        Util.writeJavaFile(output, componentName);
+        writeJavaFile(output, componentName);
         return true;
     }
 }

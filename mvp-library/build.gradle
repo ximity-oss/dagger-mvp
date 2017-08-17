@@ -23,6 +23,7 @@ dependencies {
 
     /** Build dependencies **/
     api deps.support.appcompatv7
+    api deps.support.annotations
     compileOnly deps.dagger.inject
 
     /** Test dependencies **/
