@@ -31,6 +31,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import static com.google.auto.common.MoreElements.getPackage;
+import static net.ximity.mvp.Util.asElement;
 import static net.ximity.mvp.Util.error;
 import static net.ximity.mvp.Util.writeJavaFile;
 
@@ -42,7 +43,7 @@ import static net.ximity.mvp.Util.writeJavaFile;
 @AutoService(Processor.class)
 public final class MvpProcessor extends AbstractProcessor {
 
-    private final String VIEW_PACKAGE = "net.ximity.mvp.view";
+    private final String TEMPLATE_PACKAGE = "net.ximity.mvp.template";
     private final String CONTRACT_PACKAGE = "net.ximity.mvp.contract";
     private boolean HALT = false;
     private final List<Binding> bindings = new ArrayList<>();
@@ -121,7 +122,7 @@ public final class MvpProcessor extends AbstractProcessor {
 
         TypeElement viewInterface = null;
         for (TypeMirror typeMirror : viewImplements) {
-            TypeElement currentInterface = (TypeElement) processingEnv.getTypeUtils().asElement(typeMirror);
+            TypeElement currentInterface = asElement(typeMirror);
             if (element.getEnclosedElements().contains(currentInterface)) {
                 viewInterface = currentInterface;
             } else {
@@ -132,14 +133,21 @@ public final class MvpProcessor extends AbstractProcessor {
         }
 
         TypeElement presenterInterface = null;
+        boolean isViewPresenter = false;
         for (TypeMirror typeMirror : presenterImplements) {
-            TypeElement currentInterface = (TypeElement) processingEnv.getTypeUtils().asElement(typeMirror);
+            TypeElement currentInterface = asElement(typeMirror);
             if (element.getEnclosedElements().contains(currentInterface)) {
                 presenterInterface = currentInterface;
             } else {
                 error(presenter.getSimpleName().toString() + " does not implement "
                         + element.getSimpleName() + " presenter contract!");
                 return false;
+            }
+
+            for (TypeMirror innerType : currentInterface.getInterfaces()) {
+                TypeElement innerCurrentInterface = asElement(innerType);
+                isViewPresenter = "net.ximity.mvp.contract.ViewPresenter"
+                        .equals(innerCurrentInterface.getQualifiedName().toString());
             }
         }
 
@@ -166,13 +174,15 @@ public final class MvpProcessor extends AbstractProcessor {
                         .returns(ClassName.get(presenterInterface))
                         .addParameter(ClassName.get(presenter), "impl")
                         .addStatement("return $N", "impl")
-                        .build())
-                .addMethod(MethodSpec.methodBuilder("providesViewPresenter")
-                        .addAnnotation(ClassName.get("dagger", "Provides"))
-                        .returns(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"))
-                        .addParameter(ClassName.get(presenter), "impl")
-                        .addStatement("return $N", "impl")
                         .build());
+        if (isViewPresenter) {
+            moduleBuilder.addMethod(MethodSpec.methodBuilder("providesViewPresenter")
+                    .addAnnotation(ClassName.get("dagger", "Provides"))
+                    .returns(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"))
+                    .addParameter(ClassName.get(presenter), "impl")
+                    .addStatement("return $N", "impl")
+                    .build());
+        }
 
         writeJavaFile(JavaFile.builder(packageName, moduleBuilder.build())
                 .build(), moduleClassName);
@@ -251,6 +261,10 @@ public final class MvpProcessor extends AbstractProcessor {
                 return false;
             }
 
+            if (!generateBaseComponents((TypeElement) element)) {
+                return false;
+            }
+
             if (!generateBaseViews((TypeElement) element)) {
                 return false;
             }
@@ -263,31 +277,82 @@ public final class MvpProcessor extends AbstractProcessor {
         return true;
     }
 
-    private boolean generateBaseViews(TypeElement element) {
-        final String packageName = getPackage(element).toString();
+    private boolean generateBaseComponents(TypeElement element) {
+        final ClassName application = ClassName.get(TEMPLATE_PACKAGE, "DaggerApplication");
+        final TypeSpec.Builder applicationBuilder = TypeSpec.classBuilder("BaseApplication")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(application, ClassName.get(element)));
 
-        final ClassName activityView = ClassName.get(VIEW_PACKAGE, "BaseActivityView");
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, applicationBuilder.build())
+                .build(), "BaseApplication");
+
+
+        final ClassName activity = ClassName.get(TEMPLATE_PACKAGE, "DaggerActivity");
+        final TypeSpec.Builder activityBuilder = TypeSpec.classBuilder("BaseActivity")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(activity, ClassName.get(element)));
+
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, activityBuilder.build())
+                .build(), "BaseActivity");
+
+        final ClassName receiver = ClassName.get(TEMPLATE_PACKAGE, "DaggerBroadcastReceiver");
+        final TypeSpec.Builder receiverBuilder = TypeSpec.classBuilder("BaseReceiver")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(receiver, ClassName.get(element)));
+
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, receiverBuilder.build())
+                .build(), "BaseReceiver");
+
+        final ClassName dialog = ClassName.get(TEMPLATE_PACKAGE, "DaggerDialog");
+        final TypeSpec.Builder dialogBuilder = TypeSpec.classBuilder("BaseDialog")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(dialog, ClassName.get(element)));
+
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, dialogBuilder.build())
+                .build(), "BaseDialog");
+
+        final ClassName fragment = ClassName.get(TEMPLATE_PACKAGE, "DaggerFragment");
+        final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("BaseFragment")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(fragment, ClassName.get(element)));
+
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, fragmentBuilder.build())
+                .build(), "BaseFragment");
+
+        final ClassName service = ClassName.get(TEMPLATE_PACKAGE, "DaggerService");
+        final TypeSpec.Builder serviceBuilder = TypeSpec.classBuilder("BaseService")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(service, ClassName.get(element)));
+
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, serviceBuilder.build())
+                .build(), "BaseService");
+
+        return true;
+    }
+
+    private boolean generateBaseViews(TypeElement element) {
+        final ClassName activityView = ClassName.get(TEMPLATE_PACKAGE, "BaseActivityView");
         final TypeSpec.Builder activityBuilder = TypeSpec.classBuilder("ActivityView")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .superclass(ParameterizedTypeName.get(activityView, ClassName.get(element)));
 
-        writeJavaFile(JavaFile.builder(packageName, activityBuilder.build())
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, activityBuilder.build())
                 .build(), "ActivityView");
 
-        final ClassName fragmentView = ClassName.get(VIEW_PACKAGE, "BaseFragmentView");
+        final ClassName fragmentView = ClassName.get(TEMPLATE_PACKAGE, "BaseFragmentView");
         final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("FragmentView")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .superclass(ParameterizedTypeName.get(fragmentView, ClassName.get(element)));
 
-        writeJavaFile(JavaFile.builder(packageName, fragmentBuilder.build())
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, fragmentBuilder.build())
                 .build(), "FragmentView");
 
-        final ClassName dialogView = ClassName.get(VIEW_PACKAGE, "BaseDialogView");
+        final ClassName dialogView = ClassName.get(TEMPLATE_PACKAGE, "BaseDialogView");
         final TypeSpec.Builder dialogBuilder = TypeSpec.classBuilder("DialogView")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .superclass(ParameterizedTypeName.get(dialogView, ClassName.get(element)));
 
-        writeJavaFile(JavaFile.builder(packageName, dialogBuilder.build())
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, dialogBuilder.build())
                 .build(), "DialogView");
 
         return true;

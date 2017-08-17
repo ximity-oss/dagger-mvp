@@ -1,4 +1,4 @@
-package net.ximity.mvp.dagger;
+package net.ximity.mvp.template;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
  *
  * @author by Emarc Magtanong on 2/12/16.
  */
-public abstract class DaggerApplication<M> extends Application {
+abstract class DaggerApplication<M> extends Application {
 
     /** Application main component **/
     private M mMainComponent;

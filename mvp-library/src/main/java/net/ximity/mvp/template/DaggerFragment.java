@@ -1,4 +1,4 @@
-package net.ximity.mvp.dagger;
+package net.ximity.mvp.template;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
  *
  * @author by Emarc Magtanong on 4/4/16.
  */
-public abstract class DaggerFragment<M> extends Fragment {
+ abstract class DaggerFragment<M> extends Fragment {
 
     @Override
     @SuppressWarnings("unchecked")

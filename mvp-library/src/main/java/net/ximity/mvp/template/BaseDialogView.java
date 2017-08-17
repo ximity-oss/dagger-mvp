@@ -1,10 +1,9 @@
-package net.ximity.mvp.view;
+package net.ximity.mvp.template;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import net.ximity.mvp.contract.ViewPresenter;
-import net.ximity.mvp.dagger.DaggerDialogFragment;
 
 import javax.inject.Inject;
 
@@ -13,7 +12,7 @@ import javax.inject.Inject;
  *
  * @author by Emarc Magtanong on 2017/04/28.
  */
-public abstract class BaseDialogView<C> extends DaggerDialogFragment<C> {
+abstract class BaseDialogView<C> extends DaggerDialog<C> {
 
     /** Base view presenter **/
     @Inject ViewPresenter mViewPresenter;

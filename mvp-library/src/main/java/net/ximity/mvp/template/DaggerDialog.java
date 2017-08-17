@@ -1,19 +1,19 @@
-package net.ximity.mvp.dagger;
+package net.ximity.mvp.template;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
+import android.support.v4.app.DialogFragment;
 
 /**
- * Base broadcast receiver with dependency injection from the Global Object Graph
+ * Base dialog fragment with dependency injection from the Global Object Graph
  *
- * @author by Emarc Magtanong on 4/4/16.
+ * @author by Emarc Magtanong on 2016/11/18.
  */
-public abstract class DaggerBroadcastReceiver<M> extends BroadcastReceiver {
+ abstract class DaggerDialog<M> extends DialogFragment {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onReceive(Context context, Intent intent) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
         M component = (M) DaggerApplication.get(context).getAppComponent();
         bind(component);
     }

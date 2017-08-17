@@ -1,13 +1,14 @@
 package net.ximity.sample;
 
-import net.ximity.mvp.dagger.DaggerApplication;
+
+import net.ximity.mvp.template.BaseApplication;
 
 /**
  * Sample application
  *
  * @author by Emarc Magtanong on 2017/08/16.
  */
-public final class SampleApplication extends DaggerApplication<SampleComponent> {
+public final class SampleApplication extends BaseApplication {
 
     @Override
     protected SampleComponent initializeMainComponent() {

@@ -1,4 +1,4 @@
-package net.ximity.mvp.dagger;
+package net.ximity.mvp.template;
 
 import android.app.Service;
 
@@ -7,7 +7,7 @@ import android.app.Service;
  *
  * @author by Emarc Magtanong on 4/4/16.
  */
-public abstract class DaggerService<M> extends Service {
+abstract class DaggerService<M> extends Service {
 
     @Override
     @SuppressWarnings("unchecked")

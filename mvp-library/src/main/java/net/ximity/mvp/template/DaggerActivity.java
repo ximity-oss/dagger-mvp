@@ -1,4 +1,4 @@
-package net.ximity.mvp.dagger;
+package net.ximity.mvp.template;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
  *
  * @author by Emarc Magtanong on 2/12/16.
  */
-public abstract class DaggerActivity<M> extends AppCompatActivity {
+abstract class DaggerActivity<M> extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     @Override

@@ -12,6 +12,7 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
@@ -80,6 +81,10 @@ final class Util {
         }
 
         return null;
+    }
+
+    static TypeElement asElement(TypeMirror mirror) {
+        return (TypeElement) typeUtil.asElement(mirror);
     }
 
     private Util() {
