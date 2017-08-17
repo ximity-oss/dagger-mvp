@@ -11,9 +11,9 @@ import net.ximity.mvp.template.BaseApplication;
 public final class SampleApplication extends BaseApplication {
 
     @Override
-    protected SampleComponent initializeMainComponent() {
-        return DaggerSampleComponent.builder()
-                .sampleModule(new SampleModule(this))
+    protected AppComponent initializeMainComponent() {
+        return DaggerAppComponent.builder()
+                .mainModule(new MainModule(this))
                 .build();
     }
 }

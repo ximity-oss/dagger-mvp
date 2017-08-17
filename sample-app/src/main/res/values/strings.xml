@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ximity-dagger-mvp</string>
+    <string name="login">Showing login…</string>
+    <string name="logout">Logout success!</string>
 </resources>

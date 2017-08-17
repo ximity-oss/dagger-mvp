@@ -1,4 +1,4 @@
-package net.ximity.sample.login;
+package net.ximity.sample.home;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -9,29 +9,29 @@ import net.ximity.sample.R;
 import javax.inject.Inject;
 
 /**
- * Sample login presenter implementation
+ * Home presenter implementation
  *
  * @author by Emarc Magtanong on 2017/08/17.
  */
-public final class LoginPresenter implements LoginContract.Presenter {
+public final class HomePresenter implements HomeContract.Presenter {
 
     /** Log tag **/
-    private static final String TAG = "Ximity.Login";
-    /** {@link LoginActivity} **/
-    private final LoginContract.View view;
+    private static final String TAG = "Ximity.Home";
+    /** {@link HomeActivity} **/
+    private final HomeContract.View view;
     /** Application resources **/
     private final Resources resources;
 
     @Inject
-    LoginPresenter(@NonNull LoginContract.View view, @NonNull Resources resources) {
+    HomePresenter(@NonNull HomeContract.View view, @NonNull Resources resources) {
         this.view = view;
         this.resources = resources;
     }
 
     @Override
-    public void login() {
-        view.showError(resources.getString(R.string.login));
-        view.showHome();
+    public void logout() {
+        view.showError(resources.getString(R.string.logout));
+        view.showLogin();
     }
 
     @Override

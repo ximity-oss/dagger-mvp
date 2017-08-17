@@ -15,12 +15,12 @@ import dagger.Provides;
  * @author by Emarc Magtanong on 2017/08/16.
  */
 @Module
-public final class SampleModule {
+public final class MainModule {
 
     /** Application **/
     private final Application mApplication;
 
-    SampleModule(@NonNull Application application) {
+    MainModule(@NonNull Application application) {
         mApplication = application;
     }
 
