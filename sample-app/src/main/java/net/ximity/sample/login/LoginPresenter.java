@@ -1,5 +1,8 @@
 package net.ximity.sample.login;
 
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+
 import javax.inject.Inject;
 
 /**
@@ -9,8 +12,11 @@ import javax.inject.Inject;
  */
 public final class LoginPresenter implements LoginContract.Presenter {
 
+    private final Resources resources;
+
     @Inject
-    LoginPresenter() {
+    LoginPresenter(@NonNull Resources resources) {
+        this.resources = resources;
     }
 
     @Override

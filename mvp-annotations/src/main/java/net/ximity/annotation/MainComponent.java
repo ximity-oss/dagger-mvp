@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
-public @interface MvpComponent {
+public @interface MainComponent {
     /**
      * Optional generated MVP component bind interface name.
      */

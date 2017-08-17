@@ -1,6 +1,7 @@
 package net.ximity.mvp;
 
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -9,9 +10,10 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
-import net.ximity.annotation.MvpComponent;
+import net.ximity.annotation.MainComponent;
 import net.ximity.annotation.MvpContract;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +35,7 @@ import static net.ximity.mvp.Util.error;
 import static net.ximity.mvp.Util.writeJavaFile;
 
 @SupportedAnnotationTypes({
-        "net.ximity.annotation.MvpComponent",
+        "net.ximity.annotation.MainComponent",
         "net.ximity.annotation.MvpContract",
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
@@ -43,6 +45,7 @@ public final class MvpProcessor extends AbstractProcessor {
     private final String VIEW_PACKAGE = "net.ximity.mvp.view";
     private final String CONTRACT_PACKAGE = "net.ximity.mvp.contract";
     private boolean HALT = false;
+    private final List<Binding> bindings = new ArrayList<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -100,7 +103,8 @@ public final class MvpProcessor extends AbstractProcessor {
         TypeElement presenter = Util.getPresenter(element);
         List<TypeMirror> presenterImplements = (List<TypeMirror>) presenter.getInterfaces();
 
-        String moduleClassName = Util.isEmpty(contract.moduleName()) ? element.getSimpleName().toString() + "Module" :
+        String moduleClassName = Util.isEmpty(contract.moduleName()) ?
+                element.getSimpleName().toString() + "Module" :
                 contract.moduleName();
 
         if (viewImplements.isEmpty()) {
@@ -197,24 +201,53 @@ public final class MvpProcessor extends AbstractProcessor {
         return true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private boolean generateMvpComponent(TypeElement element) {
+        final String packageName = getPackage(element).toString();
+        final MvpContract contract = element.getAnnotation(MvpContract.class);
+
+        String componentName = Util.isEmpty(contract.subcomponentName()) ?
+                element.getSimpleName().toString() + "Component" :
+                contract.subcomponentName();
+        String moduleName = Util.isEmpty(contract.moduleName()) ?
+                element.getSimpleName().toString() + "Module" :
+                contract.moduleName();
+
+        TypeElement view = Util.getView(element);
+
+        final TypeSpec mvpBindings = TypeSpec.interfaceBuilder(componentName)
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(AnnotationSpec.builder(ClassName.get("dagger", "Subcomponent"))
+                        .addMember("modules", "$N.class", moduleName)
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("bind")
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .addParameter(ClassName.get(view), view.getSimpleName().toString())
+                        .build())
+                .build();
+
+        final JavaFile output = JavaFile.builder(packageName, mvpBindings)
+                .build();
+
+        writeJavaFile(output, componentName);
+        bindings.add(new Binding(packageName, componentName, moduleName));
         return true;
     }
 
     private boolean processMainComponent(RoundEnvironment roundEnv) {
-        final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(MvpComponent.class);
+        final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(MainComponent.class);
 
         if (Util.isEmpty(elements)) {
             return true;
         }
 
         if (elements.size() > 1) {
-            error("Only one component can be annotated with " + MvpComponent.class.getSimpleName() + "!");
+            error("Only one component can be annotated with " + MainComponent.class.getSimpleName() + "!");
         }
 
         for (Element element : elements) {
             if (element.getKind() != ElementKind.INTERFACE) {
-                error(MvpComponent.class.getSimpleName() + " can only be used for interfaces!");
+                error(MainComponent.class.getSimpleName() + " can only be used for interfaces!");
                 return false;
             }
 
@@ -261,14 +294,19 @@ public final class MvpProcessor extends AbstractProcessor {
     }
 
     private boolean generateBaseComponent(TypeElement element) {
-        final MvpComponent component = element.getAnnotation(MvpComponent.class);
+        final MainComponent component = element.getAnnotation(MainComponent.class);
         final String componentName = component.value();
-        final TypeSpec mvpBindings = TypeSpec.interfaceBuilder(componentName)
-                .addMethod(MethodSpec.methodBuilder("bind")
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .addParameter(ClassName.get("android.app", "Activity"), "activity")
-                        .build())
-                .build();
+        final TypeSpec.Builder mvpBindingsBuilder = TypeSpec.interfaceBuilder(componentName);
+
+        for (Binding binding : bindings) {
+            mvpBindingsBuilder.addMethod(MethodSpec.methodBuilder("add")
+                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                    .addParameter(ClassName.get(binding.getPackageName(), binding.getModuleName()), "module")
+                    .returns(ClassName.get(binding.getPackageName(), binding.getComponentName()))
+                    .build());
+        }
+
+        final TypeSpec mvpBindings = mvpBindingsBuilder.build();
 
         final String packageName = getPackage(element).getQualifiedName().toString();
         final JavaFile output = JavaFile.builder(packageName, mvpBindings)
