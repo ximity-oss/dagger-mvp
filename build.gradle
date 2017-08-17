@@ -22,6 +22,7 @@ buildscript {
 
             'dagger' : '2.11',
             'javax'  : '1.3',
+            'inject' : '1',
     ]
 
     ext.groups = [
@@ -52,6 +53,7 @@ buildscript {
                     'library'    : "com.google.dagger:dagger:${versions.dagger}",
                     'compiler'   : "com.google.dagger:dagger-compiler:${versions.dagger}",
                     'annotations': "javax.annotation:javax.annotation-api:${versions.javax}",
+                    'inject'     : "javax.inject:javax.inject:${versions.inject}",
             ],
             javapoet      : 'com.squareup:javapoet:1.9.0',
             javaparser    : 'com.github.javaparser:javaparser-core:2.4.0',

@@ -33,6 +33,7 @@ import static com.google.auto.common.MoreElements.getPackage;
 @AutoService(Processor.class)
 public final class MvpProcessor extends AbstractProcessor {
 
+    private final String VIEW_PACKAGE = "net.ximity.mvp.view";
     private boolean HALT = false;
 
     @Override
@@ -124,19 +125,31 @@ public final class MvpProcessor extends AbstractProcessor {
     }
 
     private boolean generateBaseViews(TypeElement element) {
-        Util.note(element.getSimpleName().toString());
-        Util.note(getPackage(element).toString());
-
         final String packageName = getPackage(element).toString();
 
-        ClassName activityView = ClassName.get("net.ximity.mvp.dagger", "DaggerActivity");
+        final ClassName activityView = ClassName.get(VIEW_PACKAGE, "BaseActivityView");
         final TypeSpec.Builder activityBuilder = TypeSpec.classBuilder("ActivityView")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .superclass(ParameterizedTypeName.get(activityView, ClassName.get(element)))
-                .addSuperinterface(ClassName.get("net.ximity.mvp.contract", "MvpView"));
+                .superclass(ParameterizedTypeName.get(activityView, ClassName.get(element)));
 
         Util.writeJavaFile(JavaFile.builder(packageName, activityBuilder.build())
                 .build(), "ActivityView");
+
+        final ClassName fragmentView = ClassName.get(VIEW_PACKAGE, "BaseFragmentView");
+        final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("FragmentView")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(fragmentView, ClassName.get(element)));
+
+        Util.writeJavaFile(JavaFile.builder(packageName, fragmentBuilder.build())
+                .build(), "FragmentView");
+
+        final ClassName dialogView = ClassName.get(VIEW_PACKAGE, "BaseDialogView");
+        final TypeSpec.Builder dialogBuilder = TypeSpec.classBuilder("DialogView")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .superclass(ParameterizedTypeName.get(dialogView, ClassName.get(element)));
+
+        Util.writeJavaFile(JavaFile.builder(packageName, dialogBuilder.build())
+                .build(), "DialogView");
 
         return true;
     }
