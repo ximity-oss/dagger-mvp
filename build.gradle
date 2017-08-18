@@ -10,9 +10,27 @@ buildscript {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
     }
 
+    ext {
+        repoName = 'ximity-inc'
+
+        site = 'https://github.com/ximity-oss/dagger-mvp'
+        git = 'https://github.com/ximity-oss/dagger-mvp.git'
+
+        libraryGroup = 'net.ximity'
+        libraryVersion = '0.0.1'
+
+        developerId = 'ximity-inc'
+        developerName = 'Ximity, Inc.'
+        developerEmail = 'devs@ximity.net'
+
+        licenseName = 'The Apache Software License, Version 2.0'
+        licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        allLicenses = ["Apache-2.0"]
+    }
+
     ext.versions = [
             'code'   : 1,
-            'name'   : '0.0.1',
+            'name'   : ext.libraryVersion,
             'min'    : 15,
             'compile': 26,
             'build'  : '26.0.1',
@@ -33,7 +51,10 @@ buildscript {
             plugin        : [
                     'runtime' : 'com.google.android:android:4.1.1.4',
                     'android' : "com.android.tools.build:gradle:${versions.plugin}",
+                    // Dex method count (https://github.com/KeepSafe/dexcount-gradle-plugin)
                     'dexcount': 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.3',
+                    'bintray' : 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2',
+                    'maven'   : 'com.github.dcendents:android-maven-gradle-plugin:1.5',
             ],
             'support'     : [
                     'appcompatv7': "com.android.support:appcompat-v7:${versions.support}",
@@ -69,9 +90,6 @@ buildscript {
 }
 
 subprojects {
-    group = groups.group
-    version = versions.release
-
     repositories {
         google()
         jcenter()
@@ -87,8 +105,9 @@ subprojects {
 
         dependencies {
             classpath deps.plugin.android
-            // Dex method count (https://github.com/KeepSafe/dexcount-gradle-plugin)
             classpath deps.plugin.dexcount
+            classpath deps.plugin.bintray
+            classpath deps.plugin.maven
         }
     }
 }

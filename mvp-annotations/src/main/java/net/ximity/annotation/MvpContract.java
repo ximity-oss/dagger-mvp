@@ -16,21 +16,29 @@ public @interface MvpContract {
 
     /**
      * Required implemented presenter class
+     *
+     * @return presenter class
      */
     Class<?> presenter();
 
     /**
      * Required implemented view class
+     *
+     * @return view class
      */
     Class<?> view();
 
     /**
      * Optional generated module name
+     *
+     * @return generated module name
      */
     String moduleName() default "";
 
     /**
      * Optional generated subcomponent name
+     *
+     * @return generated subcomponent name
      */
     String subcomponentName() default "";
 }

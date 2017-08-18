@@ -15,6 +15,8 @@ import java.lang.annotation.Target;
 public @interface MainComponent {
     /**
      * Optional generated MVP component bind interface name.
+     *
+     * @return generated component binding name
      */
     String value() default "MvpBindings";
 }

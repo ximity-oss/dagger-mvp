@@ -23,9 +23,12 @@ dependencies {
 
     /** Build dependencies **/
     api deps.support.appcompatv7
-    api deps.support.annotations
+    implementation deps.support.annotations
     compileOnly deps.dagger.inject
 
     /** Test dependencies **/
     testImplementation deps.junit
 }
+
+apply from: rootProject.file('gradle/install.gradle')
+apply from: rootProject.file('gradle/publish.gradle')
