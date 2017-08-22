@@ -1,4 +1,5 @@
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
 
 version = libraryVersion
 
@@ -40,19 +41,20 @@ if (JavaVersion.current().isJava8Compatible()) {
 // Bintray
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-println properties.toString()
 
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
 
     configurations = ['archives']
+    override = true
+
     pkg {
         repo = repoName
         name = POM_ARTIFACT_ID
         desc = POM_DESCRIPTION
         websiteUrl = site
-        vcsUrl = git
+        vcsUrl = site
         licenses = allLicenses
         publish = true
         publicDownloadNumbers = false
@@ -62,6 +64,50 @@ bintray {
                 sign = true //Determines whether to GPG sign the files. The default is false
                 passphrase = properties.getProperty("bintray.gpg.password")
                 //Optional. The passphrase for GPG signing'
+            }
+        }
+
+        publications = ['Production']
+    }
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            pom.packaging = POM_PACKAGING
+
+            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
+            pom.withXml {
+                asNode().appendNode('name', POM_NAME)
+                asNode().appendNode('description', POM_DESCRIPTION)
+                asNode().appendNode('url', site)
+
+                def licensesNode = asNode().appendNode('licenses')
+                def licenseNode = licensesNode.appendNode('license')
+                licenseNode.appendNode('name', licenseName)
+                licenseNode.appendNode('url', licenseUrl)
+                licenseNode.appendNode('distribution', 'repo')
+
+                def developersNode = asNode().appendNode('developers')
+                def developerNode = developersNode.appendNode('developer')
+                developerNode.appendNode('id', developerId)
+                developerNode.appendNode('name', developerName)
+
+                def scmNode = asNode().appendNode('scm')
+                scmNode.appendNode('connection', gitConnection)
+                scmNode.appendNode('developerConnection', gitDeveloperConnection)
+                scmNode.appendNode('url', site)
+
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                    dependencyNode.appendNode('scope', 'compile')
+                }
             }
         }
     }

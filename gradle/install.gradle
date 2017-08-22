@@ -27,12 +27,11 @@ install {
                     developer {
                         id developerId
                         name developerName
-                        email developerEmail
                     }
                 }
                 scm {
-                    connection git
-                    developerConnection git
+                    connection gitConnection
+                    developerConnection gitDeveloperConnection
                     url site
                 }
             }

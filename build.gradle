@@ -11,17 +11,17 @@ buildscript {
     }
 
     ext {
-        repoName = 'ximity-inc'
+        repoName = 'maven'
 
         site = 'https://github.com/ximity-oss/dagger-mvp'
-        git = 'https://github.com/ximity-oss/dagger-mvp.git'
+        gitConnection = 'scm:git:git://github.com/ximity-oss/dagger-mvp.git'
+        gitDeveloperConnection = 'scm:git:ssh://git@github.com/ximity-oss/dagger-mvp.git'
 
-        libraryGroup = 'net.ximity'
+        libraryGroup = 'net.ximity.mvp'
         libraryVersion = '0.0.1'
 
         developerId = 'ximity-inc'
         developerName = 'Ximity, Inc.'
-        developerEmail = 'devs@ximity.net'
 
         licenseName = 'The Apache Software License, Version 2.0'
         licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'

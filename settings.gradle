@@ -3,4 +3,4 @@ include ':mvp-annotations'
 include ':mvp-library'
 include ':mvp-compiler'
 
-rootProject.name = 'ximity-dagger-mvp'
+rootProject.name = 'dagger-mvp'
