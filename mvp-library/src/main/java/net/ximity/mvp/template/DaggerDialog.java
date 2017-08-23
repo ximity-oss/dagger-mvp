@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment;
  *
  * @author by Emarc Magtanong on 2016/11/18.
  */
- abstract class DaggerDialog<M> extends DialogFragment {
+public abstract class DaggerDialog<M> extends DialogFragment {
 
     @Override
     @SuppressWarnings("unchecked")

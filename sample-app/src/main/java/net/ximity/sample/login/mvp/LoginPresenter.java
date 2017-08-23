@@ -1,10 +1,11 @@
-package net.ximity.sample.login;
+package net.ximity.sample.login.mvp;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import net.ximity.sample.R;
+import net.ximity.sample.login.LoginActivity;
 
 import javax.inject.Inject;
 

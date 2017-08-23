@@ -1,8 +1,9 @@
-package net.ximity.sample.home;
+package net.ximity.sample.home.mvp;
 
 import net.ximity.annotation.MvpContract;
 import net.ximity.mvp.contract.AuthView;
 import net.ximity.mvp.contract.ViewPresenter;
+import net.ximity.sample.home.HomeActivity;
 
 /**
  * Home view contract

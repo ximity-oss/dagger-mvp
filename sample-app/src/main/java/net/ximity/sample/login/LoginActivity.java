@@ -10,6 +10,8 @@ import net.ximity.mvp.template.ActivityView;
 import net.ximity.sample.AppComponent;
 import net.ximity.sample.R;
 import net.ximity.sample.home.HomeActivity;
+import net.ximity.sample.login.mvp.LoginContract;
+import net.ximity.sample.login.mvp.LoginContractModule;
 
 import javax.inject.Inject;
 

@@ -1,8 +1,9 @@
-package net.ximity.sample.login;
+package net.ximity.sample.login.mvp;
 
 import net.ximity.annotation.MvpContract;
 import net.ximity.mvp.contract.MvpView;
 import net.ximity.mvp.contract.ViewPresenter;
+import net.ximity.sample.login.LoginActivity;
 
 /**
  * Login view contract

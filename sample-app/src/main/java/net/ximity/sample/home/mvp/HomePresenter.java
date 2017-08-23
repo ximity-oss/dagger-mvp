@@ -1,10 +1,11 @@
-package net.ximity.sample.home;
+package net.ximity.sample.home.mvp;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import net.ximity.sample.R;
+import net.ximity.sample.home.HomeActivity;
 
 import javax.inject.Inject;
 

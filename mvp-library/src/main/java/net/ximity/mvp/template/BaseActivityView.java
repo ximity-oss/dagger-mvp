@@ -12,7 +12,7 @@ import javax.inject.Inject;
  *
  * @author by Emarc Magtanong on 2017/04/28.
  */
-abstract class BaseActivityView<C> extends DaggerActivity<C> {
+public abstract class BaseActivityView<C> extends DaggerActivity<C> {
 
     /** Base view presenter **/
     @Inject ViewPresenter mViewPresenter;

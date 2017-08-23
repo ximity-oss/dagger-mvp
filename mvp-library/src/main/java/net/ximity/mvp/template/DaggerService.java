@@ -7,7 +7,7 @@ import android.app.Service;
  *
  * @author by Emarc Magtanong on 4/4/16.
  */
-abstract class DaggerService<M> extends Service {
+public abstract class DaggerService<M> extends Service {
 
     @Override
     @SuppressWarnings("unchecked")

@@ -9,7 +9,7 @@ import android.content.Intent;
  *
  * @author by Emarc Magtanong on 4/4/16.
  */
- abstract class DaggerBroadcastReceiver<M> extends BroadcastReceiver {
+public abstract class DaggerBroadcastReceiver<M> extends BroadcastReceiver {
 
     @Override
     @SuppressWarnings("unchecked")

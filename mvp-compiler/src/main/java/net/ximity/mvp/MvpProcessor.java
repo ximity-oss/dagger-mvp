@@ -110,7 +110,7 @@ public final class MvpProcessor extends AbstractProcessor {
 
         if (viewImplements.isEmpty()) {
             error(view.getSimpleName().toString() + " does not implement "
-                    + element.getSimpleName() + " view contract!");
+                    + element.getSimpleName() + " view contract! (Does not implement any interfaces)");
             return false;
         }
 
@@ -125,11 +125,13 @@ public final class MvpProcessor extends AbstractProcessor {
             TypeElement currentInterface = asElement(typeMirror);
             if (element.getEnclosedElements().contains(currentInterface)) {
                 viewInterface = currentInterface;
-            } else {
-                error(view.getSimpleName().toString() + " does not implement "
-                        + element.getSimpleName() + " view contract!");
-                return false;
             }
+        }
+
+        if (viewInterface == null) {
+            error(view.getSimpleName().toString() + " does not implement "
+                    + element.getSimpleName() + " view contract!");
+            return false;
         }
 
         TypeElement presenterInterface = null;
@@ -138,10 +140,6 @@ public final class MvpProcessor extends AbstractProcessor {
             TypeElement currentInterface = asElement(typeMirror);
             if (element.getEnclosedElements().contains(currentInterface)) {
                 presenterInterface = currentInterface;
-            } else {
-                error(presenter.getSimpleName().toString() + " does not implement "
-                        + element.getSimpleName() + " presenter contract!");
-                return false;
             }
 
             for (TypeMirror innerType : currentInterface.getInterfaces()) {
@@ -149,6 +147,12 @@ public final class MvpProcessor extends AbstractProcessor {
                 isViewPresenter = "net.ximity.mvp.contract.ViewPresenter"
                         .equals(innerCurrentInterface.getQualifiedName().toString());
             }
+        }
+
+        if (presenterInterface == null) {
+            error(presenter.getSimpleName().toString() + " does not implement "
+                    + element.getSimpleName() + " presenter contract!");
+            return false;
         }
 
         final TypeSpec.Builder moduleBuilder = TypeSpec.classBuilder(moduleClassName)

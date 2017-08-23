@@ -8,6 +8,8 @@ import android.widget.Toast;
 import net.ximity.mvp.template.ActivityView;
 import net.ximity.sample.AppComponent;
 import net.ximity.sample.R;
+import net.ximity.sample.home.mvp.HomeContract;
+import net.ximity.sample.home.mvp.HomeContractModule;
 
 import javax.inject.Inject;
 

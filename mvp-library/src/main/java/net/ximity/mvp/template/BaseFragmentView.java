@@ -12,7 +12,7 @@ import javax.inject.Inject;
  *
  * @author by Emarc Magtanong on 2017/04/28.
  */
-abstract class BaseFragmentView<C> extends DaggerFragment<C> {
+public abstract class BaseFragmentView<C> extends DaggerFragment<C> {
 
     /** Base view presenter **/
     @Inject ViewPresenter mViewPresenter;

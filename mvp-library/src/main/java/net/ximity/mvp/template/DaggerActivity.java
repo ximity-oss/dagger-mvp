@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
  *
  * @author by Emarc Magtanong on 2/12/16.
  */
-abstract class DaggerActivity<M> extends AppCompatActivity {
+public abstract class DaggerActivity<M> extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     @Override

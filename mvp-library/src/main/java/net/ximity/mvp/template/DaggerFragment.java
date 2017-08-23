@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
  *
  * @author by Emarc Magtanong on 4/4/16.
  */
- abstract class DaggerFragment<M> extends Fragment {
+public abstract class DaggerFragment<M> extends Fragment {
 
     @Override
     @SuppressWarnings("unchecked")

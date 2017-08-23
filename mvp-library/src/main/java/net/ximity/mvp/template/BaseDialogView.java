@@ -12,7 +12,7 @@ import javax.inject.Inject;
  *
  * @author by Emarc Magtanong on 2017/04/28.
  */
-abstract class BaseDialogView<C> extends DaggerDialog<C> {
+public abstract class BaseDialogView<C> extends DaggerDialog<C> {
 
     /** Base view presenter **/
     @Inject ViewPresenter mViewPresenter;

@@ -1,5 +1,7 @@
 package net.ximity.sample;
 
+import net.ximity.annotation.MainComponent;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -9,7 +11,7 @@ import dagger.Component;
  *
  * @author by Emarc Magtanong on 2017/08/16.
  */
-@net.ximity.annotation.MainComponent
+@MainComponent
 @Singleton
 @Component(modules = {
         MainModule.class,
