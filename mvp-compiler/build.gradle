@@ -12,6 +12,7 @@ dependencies {
     /** Build dependencies **/
     implementation deps.auto.common
     api deps.javapoet
+    compileOnly deps.dagger.inject
     compileOnly deps.auto.service
     compileOnly files(Jvm.current().getToolsJar())
 

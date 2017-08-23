@@ -23,6 +23,7 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
+import javax.inject.Inject;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -290,7 +291,6 @@ public final class MvpProcessor extends AbstractProcessor {
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, applicationBuilder.build())
                 .build(), "BaseApplication");
 
-
         final ClassName activity = ClassName.get(TEMPLATE_PACKAGE, "DaggerActivity");
         final TypeSpec.Builder activityBuilder = TypeSpec.classBuilder("BaseActivity")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -299,13 +299,13 @@ public final class MvpProcessor extends AbstractProcessor {
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, activityBuilder.build())
                 .build(), "BaseActivity");
 
-        final ClassName receiver = ClassName.get(TEMPLATE_PACKAGE, "DaggerBroadcastReceiver");
-        final TypeSpec.Builder receiverBuilder = TypeSpec.classBuilder("BaseReceiver")
+        final ClassName fragment = ClassName.get(TEMPLATE_PACKAGE, "DaggerFragment");
+        final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("BaseFragment")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .superclass(ParameterizedTypeName.get(receiver, ClassName.get(element)));
+                .superclass(ParameterizedTypeName.get(fragment, ClassName.get(element)));
 
-        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, receiverBuilder.build())
-                .build(), "BaseReceiver");
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, fragmentBuilder.build())
+                .build(), "BaseFragment");
 
         final ClassName dialog = ClassName.get(TEMPLATE_PACKAGE, "DaggerDialog");
         final TypeSpec.Builder dialogBuilder = TypeSpec.classBuilder("BaseDialog")
@@ -315,13 +315,13 @@ public final class MvpProcessor extends AbstractProcessor {
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, dialogBuilder.build())
                 .build(), "BaseDialog");
 
-        final ClassName fragment = ClassName.get(TEMPLATE_PACKAGE, "DaggerFragment");
-        final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("BaseFragment")
+        final ClassName receiver = ClassName.get(TEMPLATE_PACKAGE, "DaggerBroadcastReceiver");
+        final TypeSpec.Builder receiverBuilder = TypeSpec.classBuilder("BaseReceiver")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .superclass(ParameterizedTypeName.get(fragment, ClassName.get(element)));
+                .superclass(ParameterizedTypeName.get(receiver, ClassName.get(element)));
 
-        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, fragmentBuilder.build())
-                .build(), "BaseFragment");
+        writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, receiverBuilder.build())
+                .build(), "BaseReceiver");
 
         final ClassName service = ClassName.get(TEMPLATE_PACKAGE, "DaggerService");
         final TypeSpec.Builder serviceBuilder = TypeSpec.classBuilder("BaseService")
@@ -335,26 +335,118 @@ public final class MvpProcessor extends AbstractProcessor {
     }
 
     private boolean generateBaseViews(TypeElement element) {
-        final ClassName activityView = ClassName.get(TEMPLATE_PACKAGE, "BaseActivityView");
+        List<MethodSpec> activityMethods = new ArrayList<>();
+
+        activityMethods.add(MethodSpec.methodBuilder("onCreate")
+                .addModifiers(Modifier.PROTECTED)
+                .addAnnotation(Override.class)
+                .addParameter(ParameterSpec.builder(ClassName.get("android.os", "Bundle"), "saveInstanceState")
+                        .addAnnotation(ClassName.get("android.support.annotation", "Nullable"))
+                        .build())
+                .addStatement("super.onCreate(saveInstanceState)")
+                .addStatement("viewPresenter.create()")
+                .build());
+
+        activityMethods.add(MethodSpec.methodBuilder("onStart")
+                .addModifiers(Modifier.PROTECTED)
+                .addAnnotation(Override.class)
+                .addStatement("super.onStart()")
+                .addStatement("viewPresenter.start()")
+                .build());
+
+        activityMethods.add(MethodSpec.methodBuilder("onStop")
+                .addModifiers(Modifier.PROTECTED)
+                .addAnnotation(Override.class)
+                .addStatement("super.onStop()")
+                .addStatement("viewPresenter.stop()")
+                .build());
+
+        activityMethods.add(MethodSpec.methodBuilder("onDestroy")
+                .addModifiers(Modifier.PROTECTED)
+                .addAnnotation(Override.class)
+                .addStatement("super.onDestroy()")
+                .addStatement("viewPresenter.destroy()")
+                .build());
+
+        activityMethods.add(MethodSpec.methodBuilder("injectViewPresenter")
+                .addAnnotation(Inject.class)
+                .addModifiers(Modifier.PROTECTED)
+                .addParameter(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"), "viewPresenter")
+                .addStatement("this.viewPresenter = viewPresenter")
+                .build());
+
+        List<MethodSpec> fragmentMethods = new ArrayList<>();
+
+        fragmentMethods.add(MethodSpec.methodBuilder("onCreate")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addParameter(ParameterSpec.builder(ClassName.get("android.os", "Bundle"), "saveInstanceState")
+                        .addAnnotation(ClassName.get("android.support.annotation", "Nullable"))
+                        .build())
+                .addStatement("super.onCreate(saveInstanceState)")
+                .addStatement("viewPresenter.create()")
+                .build());
+
+        fragmentMethods.add(MethodSpec.methodBuilder("onStart")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addStatement("super.onStart()")
+                .addStatement("viewPresenter.start()")
+                .build());
+
+        fragmentMethods.add(MethodSpec.methodBuilder("onStop")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addStatement("super.onStop()")
+                .addStatement("viewPresenter.stop()")
+                .build());
+
+        fragmentMethods.add(MethodSpec.methodBuilder("onDestroy")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addStatement("super.onDestroy()")
+                .addStatement("viewPresenter.destroy()")
+                .build());
+
+        fragmentMethods.add(MethodSpec.methodBuilder("injectViewPresenter")
+                .addAnnotation(Inject.class)
+                .addModifiers(Modifier.PROTECTED)
+                .addParameter(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"), "viewPresenter")
+                .addStatement("this.viewPresenter = viewPresenter")
+                .build());
+
+        final ClassName activityView = ClassName.get(TEMPLATE_PACKAGE, "DaggerActivity");
         final TypeSpec.Builder activityBuilder = TypeSpec.classBuilder("ActivityView")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .superclass(ParameterizedTypeName.get(activityView, ClassName.get(element)));
+                .superclass(ParameterizedTypeName.get(activityView, ClassName.get(element)))
+                .addField(FieldSpec.builder(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"), "viewPresenter")
+                        .addModifiers(Modifier.PRIVATE)
+                        .build())
+                .addMethods(activityMethods);
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, activityBuilder.build())
                 .build(), "ActivityView");
 
-        final ClassName fragmentView = ClassName.get(TEMPLATE_PACKAGE, "BaseFragmentView");
+        final ClassName fragmentView = ClassName.get(TEMPLATE_PACKAGE, "DaggerFragment");
         final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("FragmentView")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .superclass(ParameterizedTypeName.get(fragmentView, ClassName.get(element)));
+                .superclass(ParameterizedTypeName.get(fragmentView, ClassName.get(element)))
+                .addField(FieldSpec.builder(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"), "viewPresenter")
+                        .addModifiers(Modifier.PRIVATE)
+                        .build())
+                .addMethods(fragmentMethods);
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, fragmentBuilder.build())
                 .build(), "FragmentView");
 
-        final ClassName dialogView = ClassName.get(TEMPLATE_PACKAGE, "BaseDialogView");
+        final ClassName dialogView = ClassName.get(TEMPLATE_PACKAGE, "DaggerDialog");
         final TypeSpec.Builder dialogBuilder = TypeSpec.classBuilder("DialogView")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .superclass(ParameterizedTypeName.get(dialogView, ClassName.get(element)));
+                .superclass(ParameterizedTypeName.get(dialogView, ClassName.get(element)))
+                .addField(FieldSpec.builder(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"), "viewPresenter")
+                        .addModifiers(Modifier.PRIVATE)
+                        .build())
+                .addMethods(fragmentMethods);
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, dialogBuilder.build())
                 .build(), "DialogView");
