@@ -12,8 +12,6 @@ android {
         versionName versions.name
 
         consumerProguardFiles file('./proguard-rules').listFiles()
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 
