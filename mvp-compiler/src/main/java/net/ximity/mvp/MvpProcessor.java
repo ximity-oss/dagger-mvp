@@ -22,7 +22,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.inject.Inject;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -40,7 +39,6 @@ import static net.ximity.mvp.Util.writeJavaFile;
         "net.ximity.annotation.MainComponent",
         "net.ximity.annotation.MvpContract",
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
 @AutoService(Processor.class)
 public final class MvpProcessor extends AbstractProcessor {
 
@@ -48,6 +46,11 @@ public final class MvpProcessor extends AbstractProcessor {
     private final String CONTRACT_PACKAGE = "net.ximity.mvp.contract";
     private boolean HALT = false;
     private final List<Binding> bindings = new ArrayList<>();
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
+    }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
