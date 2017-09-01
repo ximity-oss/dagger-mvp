@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import net.ximity.annotation.PerView;
 import net.ximity.sample.R;
 import net.ximity.sample.home.HomeActivity;
 
@@ -14,6 +15,7 @@ import javax.inject.Inject;
  *
  * @author by Emarc Magtanong on 2017/08/17.
  */
+@PerView
 public final class HomePresenter implements HomeContract.Presenter {
 
     /** Log tag **/

@@ -12,7 +12,9 @@ import com.squareup.javapoet.TypeSpec;
 
 import net.ximity.annotation.MainComponent;
 import net.ximity.annotation.MvpContract;
+import net.ximity.annotation.PerView;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -108,6 +110,11 @@ public final class MvpProcessor extends AbstractProcessor {
         TypeElement presenter = Util.getPresenter(element);
         List<TypeMirror> presenterImplements = (List<TypeMirror>) presenter.getInterfaces();
 
+        Annotation presenterAnnotation = presenter.getAnnotation(PerView.class);
+        if (presenterAnnotation == null) {
+            error(presenter.getSimpleName().toString() + " does not have a @PerView scope!!!");
+        }
+
         String moduleClassName = Util.isEmpty(contract.moduleName()) ?
                 element.getSimpleName().toString() + "Module" :
                 contract.moduleName();
@@ -173,11 +180,13 @@ public final class MvpProcessor extends AbstractProcessor {
                         .addStatement("this.$N = $N", "view", "view")
                         .build())
                 .addMethod(MethodSpec.methodBuilder("providesView")
+                        .addAnnotation(PerView.class)
                         .addAnnotation(ClassName.get("dagger", "Provides"))
                         .returns(ClassName.get(viewInterface))
                         .addStatement("return this.$N", "view")
                         .build())
                 .addMethod(MethodSpec.methodBuilder("providesPresenter")
+                        .addAnnotation(PerView.class)
                         .addAnnotation(ClassName.get("dagger", "Provides"))
                         .returns(ClassName.get(presenterInterface))
                         .addParameter(ClassName.get(presenter), "impl")
@@ -185,6 +194,7 @@ public final class MvpProcessor extends AbstractProcessor {
                         .build());
         if (isViewPresenter) {
             moduleBuilder.addMethod(MethodSpec.methodBuilder("providesViewPresenter")
+                    .addAnnotation(PerView.class)
                     .addAnnotation(ClassName.get("dagger", "Provides"))
                     .returns(ClassName.get(CONTRACT_PACKAGE, "ViewPresenter"))
                     .addParameter(ClassName.get(presenter), "impl")
@@ -235,6 +245,7 @@ public final class MvpProcessor extends AbstractProcessor {
 
         final TypeSpec mvpBindings = TypeSpec.interfaceBuilder(componentName)
                 .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(PerView.class)
                 .addAnnotation(AnnotationSpec.builder(ClassName.get("dagger", "Subcomponent"))
                         .addMember("modules", "$N.class", moduleName)
                         .build())
