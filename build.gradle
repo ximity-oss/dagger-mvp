@@ -18,7 +18,7 @@ buildscript {
         gitDeveloperConnection = 'scm:git:ssh://git@github.com/ximity-oss/dagger-mvp.git'
 
         libraryGroup = 'net.ximity.mvp'
-        libraryVersion = '0.0.2'
+        libraryVersion = '0.0.3'
 
         developerId = 'ximity-inc'
         developerName = 'Ximity, Inc.'
@@ -44,7 +44,7 @@ buildscript {
     ]
 
     ext.groups = [
-            'group': 'net.ximity.mvp'
+            'group': ext.libraryGroup
     ]
 
     ext.deps = [
@@ -54,7 +54,7 @@ buildscript {
                     // Dex method count (https://github.com/KeepSafe/dexcount-gradle-plugin)
                     'dexcount': 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.3',
                     'bintray' : 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3',
-                    'maven'   : 'com.github.dcendents:android-maven-gradle-plugin:1.5',
+                    'maven'   : 'com.github.dcendents:android-maven-gradle-plugin:2.0',
             ],
             'support'     : [
                     'appcompatv7': "com.android.support:appcompat-v7:${versions.support}",

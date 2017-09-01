@@ -13,7 +13,7 @@ install {
 
                 // Add your description here
                 name POM_NAME
-                description POM_NAME
+                description POM_DESCRIPTION
                 url site
 
                 // Set your license
