@@ -1,6 +1,7 @@
 package net.ximity.mvp.template;
 
 import android.app.Service;
+import android.support.annotation.NonNull;
 
 /**
  * Base Service with dependency injection from the Global Object Graph
@@ -22,5 +23,5 @@ public abstract class DaggerService<M> extends Service {
      *
      * @param mainComponent component to bind globally scoped dependencies
      */
-    protected abstract void bind(M mainComponent);
+    protected abstract void bind(@NonNull M mainComponent);
 }

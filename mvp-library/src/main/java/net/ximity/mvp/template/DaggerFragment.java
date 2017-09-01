@@ -1,6 +1,7 @@
 package net.ximity.mvp.template;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 /**
@@ -23,5 +24,5 @@ public abstract class DaggerFragment<M> extends Fragment {
      *
      * @param component component to bind globally scoped dependencies
      */
-    protected abstract void bind(M component);
+    protected abstract void bind(@NonNull M component);
 }

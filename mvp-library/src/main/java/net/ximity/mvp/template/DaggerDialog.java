@@ -1,6 +1,7 @@
 package net.ximity.mvp.template;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
 /**
@@ -23,5 +24,5 @@ public abstract class DaggerDialog<M> extends DialogFragment {
      *
      * @param mainComponent component to bind globally scoped dependencies
      */
-    protected abstract void bind(M mainComponent);
+    protected abstract void bind(@NonNull M mainComponent);
 }

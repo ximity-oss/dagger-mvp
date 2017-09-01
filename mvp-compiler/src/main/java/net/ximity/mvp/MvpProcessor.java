@@ -471,7 +471,8 @@ public final class MvpProcessor extends AbstractProcessor {
     private boolean generateBaseComponent(TypeElement element) {
         final MainComponent component = element.getAnnotation(MainComponent.class);
         final String componentName = component.value();
-        final TypeSpec.Builder mvpBindingsBuilder = TypeSpec.interfaceBuilder(componentName);
+        final TypeSpec.Builder mvpBindingsBuilder = TypeSpec.interfaceBuilder(componentName)
+                .addModifiers(Modifier.PUBLIC);
 
         for (Binding binding : bindings) {
             mvpBindingsBuilder.addMethod(MethodSpec.methodBuilder("add")

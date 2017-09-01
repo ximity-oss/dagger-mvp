@@ -3,6 +3,7 @@ package net.ximity.mvp.template;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 /**
  * Base broadcast receiver with dependency injection from the Global Object Graph
@@ -23,5 +24,5 @@ public abstract class DaggerBroadcastReceiver<M> extends BroadcastReceiver {
      *
      * @param mainComponent component to bind globally scoped dependencies
      */
-    protected abstract void bind(M mainComponent);
+    protected abstract void bind(@NonNull M mainComponent);
 }
