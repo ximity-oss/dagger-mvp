@@ -15,7 +15,7 @@ public abstract class DaggerBroadcastReceiver<M> extends BroadcastReceiver {
     @Override
     @SuppressWarnings("unchecked")
     public void onReceive(Context context, Intent intent) {
-        M component = (M) DaggerApplication.get(context).getAppComponent();
+        M component = (M) DaggerApplication.getApp(context).getComponent();
         bind(component);
     }
 

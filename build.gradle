@@ -18,7 +18,7 @@ buildscript {
         gitDeveloperConnection = 'scm:git:ssh://git@github.com/ximity-oss/dagger-mvp.git'
 
         libraryGroup = 'net.ximity.mvp'
-        libraryVersion = '0.0.5'
+        libraryVersion = '0.0.6'
 
         developerId = 'ximity-inc'
         developerName = 'Ximity, Inc.'
@@ -36,7 +36,7 @@ buildscript {
             'build'  : '26.0.1',
             'support': '26.0.2',
             'tools'  : '26.0.0-beta2',
-            'plugin' : '3.0.0-beta2',
+            'plugin' : '3.0.0-beta4',
 
             'dagger' : '2.11',
             'javax'  : '1.3',
@@ -79,7 +79,7 @@ buildscript {
             javapoet      : 'com.squareup:javapoet:1.9.0',
             javaparser    : 'com.github.javaparser:javaparser-core:2.4.0',
             junit         : 'junit:junit:4.12',
-            truth         : 'com.google.truth:truth:0.34',
+            truth         : 'com.google.truth:truth:0.35',
             robolectric   : 'org.robolectric:robolectric:3.1.2',
             compiletesting: 'com.google.testing.compile:compile-testing:0.11',
             'auto'        : [

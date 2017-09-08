@@ -26,7 +26,7 @@ public abstract class DaggerApplication<M> extends Application {
     protected abstract M initializeMainComponent();
 
     @SuppressWarnings("unchecked")
-    public static <APP extends DaggerApplication> APP get(@NonNull Context context) {
+    public static <APP extends DaggerApplication> APP getApp(@NonNull Context context) {
         return (APP) context.getApplicationContext();
     }
 
@@ -35,7 +35,7 @@ public abstract class DaggerApplication<M> extends Application {
      *
      * @return application's main component
      */
-    public M getAppComponent() {
+    public M getComponent() {
         return mMainComponent;
     }
 }

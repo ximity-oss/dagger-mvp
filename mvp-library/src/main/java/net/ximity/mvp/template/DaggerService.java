@@ -14,7 +14,7 @@ public abstract class DaggerService<M> extends Service {
     @SuppressWarnings("unchecked")
     public void onCreate() {
         super.onCreate();
-        M component = (M) DaggerApplication.get(this).getAppComponent();
+        M component = (M) DaggerApplication.getApp(this).getComponent();
         bind(component);
     }
 

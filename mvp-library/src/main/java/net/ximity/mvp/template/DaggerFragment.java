@@ -15,7 +15,7 @@ public abstract class DaggerFragment<M> extends Fragment {
     @SuppressWarnings("unchecked")
     public void onAttach(Context context) {
         super.onAttach(context);
-        M component = (M) DaggerApplication.get(context).getAppComponent();
+        M component = (M) DaggerApplication.getApp(context).getComponent();
         bind(component);
     }
 
