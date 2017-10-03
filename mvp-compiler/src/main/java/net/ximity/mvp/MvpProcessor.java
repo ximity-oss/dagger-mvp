@@ -35,6 +35,7 @@ import javax.lang.model.type.TypeMirror;
 import static com.google.auto.common.MoreElements.getPackage;
 import static net.ximity.mvp.Util.asElement;
 import static net.ximity.mvp.Util.error;
+import static net.ximity.mvp.Util.isSubTypePresenter;
 import static net.ximity.mvp.Util.writeJavaFile;
 
 @SupportedAnnotationTypes({
@@ -154,9 +155,7 @@ public final class MvpProcessor extends AbstractProcessor {
             }
 
             for (TypeMirror innerType : currentInterface.getInterfaces()) {
-                TypeElement innerCurrentInterface = asElement(innerType);
-                isViewPresenter = "net.ximity.mvp.contract.ViewPresenter"
-                        .equals(innerCurrentInterface.getQualifiedName().toString());
+                isViewPresenter = isSubTypePresenter(innerType);
             }
         }
 

@@ -13,6 +13,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
@@ -26,11 +27,13 @@ final class Util {
     private static Messager messager;
     private static Filer filer;
     private static Types typeUtil;
+    private static Elements elementUtil;
 
     public static void init(ProcessingEnvironment environment) {
         messager = environment.getMessager();
         filer = environment.getFiler();
         typeUtil = environment.getTypeUtils();
+        elementUtil = environment.getElementUtils();
     }
 
     static void error(String message) {
@@ -85,6 +88,14 @@ final class Util {
 
     static TypeElement asElement(TypeMirror mirror) {
         return (TypeElement) typeUtil.asElement(mirror);
+    }
+
+    static boolean isSubTypePresenter(TypeMirror type) {
+//        TypeMirror parameterTypes = mirror.getParameterTypes();
+//        TypeMirror typeOfE = processingEnv.getElementUtils().getTypeElement(E.class.getName()).asType();
+//        boolean isSubTypeOfE = processingEnv.getTypeUtils().isSubtype(parameterType, eventType)
+        TypeMirror viewPresenter = elementUtil.getTypeElement("net.ximity.mvp.contract.ViewPresenter").asType();
+        return typeUtil.isSubtype(type, viewPresenter);
     }
 
     private Util() {
