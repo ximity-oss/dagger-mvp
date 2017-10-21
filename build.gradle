@@ -18,7 +18,7 @@ buildscript {
         gitDeveloperConnection = 'scm:git:ssh://git@github.com/ximity-oss/dagger-mvp.git'
 
         libraryGroup = 'net.ximity.mvp'
-        libraryVersion = '0.0.7'
+        libraryVersion = '0.0.8'
 
         developerId = 'ximity-inc'
         developerName = 'Ximity, Inc.'
