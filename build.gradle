@@ -42,7 +42,7 @@ buildscript {
             'maven'         : '2.0',
             'runtime'       : '4.1.1.4',
 
-            'autocommon'    : '0.9',
+            'autocommon'    : '0.10',
             'autoservice'   : '1.0-rc4',
             'compiletesting': '0.11',
             'dagger'        : '2.14.1',
