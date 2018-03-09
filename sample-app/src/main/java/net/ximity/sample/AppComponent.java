@@ -16,5 +16,5 @@ import dagger.Component;
 @Component(modules = {
         MainModule.class,
 })
-public interface AppComponent extends MvpBindings {
+public abstract class AppComponent implements MvpBindings {
 }

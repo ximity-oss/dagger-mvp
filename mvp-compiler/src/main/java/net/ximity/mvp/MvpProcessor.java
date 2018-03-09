@@ -274,8 +274,10 @@ public final class MvpProcessor extends AbstractProcessor {
         }
 
         for (Element element : elements) {
-            if (element.getKind() != ElementKind.INTERFACE) {
-                error(MainComponent.class.getSimpleName() + " can only be used for interfaces!");
+            if (element.getKind() != ElementKind.INTERFACE &&
+                    (element.getKind() != ElementKind.CLASS &&
+                            !element.getModifiers().contains(Modifier.ABSTRACT))) {
+                error(MainComponent.class.getSimpleName() + " can only be used for interfaces and abstract classes!");
                 return false;
             }
 
