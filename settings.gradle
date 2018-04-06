@@ -2,5 +2,3 @@ include ':sample-app'
 include ':mvp-annotations'
 include ':mvp-library'
 include ':mvp-compiler'
-
-rootProject.name = 'dagger-mvp'

@@ -15,7 +15,6 @@ Session.vim
 # auto-generated tag files
 tags
 ### OSX template
-*.DS_Store
 .AppleDouble
 .LSOverride
 
@@ -115,6 +114,7 @@ captures/
 
 # Keystore files
 *.jks
+*.keystore
 
 # temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
