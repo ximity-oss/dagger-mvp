@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
  *
  * @author by Emarc Magtanong on 2/12/16.
  */
-public abstract class DaggerApplication<M> extends Application {
+public abstract class MvpApplication<M> extends Application {
 
     /** Application main component **/
     private M mMainComponent;
@@ -26,7 +26,7 @@ public abstract class DaggerApplication<M> extends Application {
     protected abstract M initializeMainComponent();
 
     @SuppressWarnings("unchecked")
-    public static <APP extends DaggerApplication> APP getApp(@NonNull Context context) {
+    public static <APP extends MvpApplication> APP getApp(@NonNull Context context) {
         return (APP) context.getApplicationContext();
     }
 

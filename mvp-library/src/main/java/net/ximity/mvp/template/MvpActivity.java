@@ -10,13 +10,13 @@ import android.support.v7.app.AppCompatActivity;
  *
  * @author by Emarc Magtanong on 2/12/16.
  */
-public abstract class DaggerActivity<M> extends AppCompatActivity {
+public abstract class MvpActivity<M> extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        M component = (M) DaggerApplication.getApp(this).getComponent();
+        M component = (M) MvpApplication.getApp(this).getComponent();
         bind(component);
     }
 

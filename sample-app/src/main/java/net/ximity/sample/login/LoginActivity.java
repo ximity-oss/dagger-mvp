@@ -2,6 +2,8 @@ package net.ximity.sample.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -18,23 +20,25 @@ import javax.inject.Inject;
 public final class LoginActivity extends ActivityView
         implements LoginContract.View {
 
-    @Inject LoginContract.Presenter mPresenter;
+    @Inject LoginContract.Presenter presenter;
 
     @Override
-    protected void bind(AppComponent component) {
+    protected void bind(@NonNull AppComponent component) {
         component.add(new LoginContractModule(this))
-                .bind(this);
+                .bind(this)
+                .bindPresenter(presenter);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Ximity.LoginActivity", "Presenter instance: " + presenter.toString());
         setContentView(R.layout.activity_login);
         Button login = findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.login();
+                presenter.login();
             }
         });
     }

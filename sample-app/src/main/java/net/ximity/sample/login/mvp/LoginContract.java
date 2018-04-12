@@ -1,8 +1,8 @@
 package net.ximity.sample.login.mvp;
 
 import net.ximity.annotation.MvpContract;
+import net.ximity.mvp.contract.MvpPresenter;
 import net.ximity.mvp.contract.MvpView;
-import net.ximity.sample.BaseViewPresenter;
 import net.ximity.sample.login.LoginActivity;
 
 /**
@@ -19,7 +19,7 @@ public interface LoginContract {
         void showHome();
     }
 
-    interface Presenter extends BaseViewPresenter {
+    interface Presenter extends MvpPresenter {
         /**
          * Fake login to go to home screen
          */

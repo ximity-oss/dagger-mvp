@@ -1,10 +1,12 @@
 package net.ximity.sample.home.mvp;
 
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
-import net.ximity.annotation.PerView;
+import net.ximity.annotation.MvpScope;
 import net.ximity.sample.R;
 import net.ximity.sample.home.HomeActivity;
 
@@ -15,7 +17,7 @@ import javax.inject.Inject;
  *
  * @author by Emarc Magtanong on 2017/08/17.
  */
-@PerView
+@MvpScope
 public final class HomePresenter implements HomeContract.Presenter {
 
     /** Log tag **/
@@ -38,7 +40,7 @@ public final class HomePresenter implements HomeContract.Presenter {
     }
 
     @Override
-    public void create() {
+    public void create(@Nullable Bundle saved) {
         Log.d(TAG, "Presenter instance: " + this.toString());
         Log.d(TAG, "create()");
     }
@@ -46,6 +48,16 @@ public final class HomePresenter implements HomeContract.Presenter {
     @Override
     public void start() {
         Log.d(TAG, "start()");
+    }
+
+    @Override
+    public void pause() {
+        Log.d(TAG, "pause()");
+    }
+
+    @Override
+    public void saveState(@NonNull Bundle out) {
+        Log.d(TAG, "saveState()");
     }
 
     @Override

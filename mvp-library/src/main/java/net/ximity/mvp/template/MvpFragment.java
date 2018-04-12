@@ -9,13 +9,13 @@ import android.support.v4.app.Fragment;
  *
  * @author by Emarc Magtanong on 4/4/16.
  */
-public abstract class DaggerFragment<M> extends Fragment {
+public abstract class MvpFragment<M> extends Fragment {
 
     @Override
     @SuppressWarnings("unchecked")
     public void onAttach(Context context) {
         super.onAttach(context);
-        M component = (M) DaggerApplication.getApp(context).getComponent();
+        M component = (M) MvpApplication.getApp(context).getComponent();
         bind(component);
     }
 

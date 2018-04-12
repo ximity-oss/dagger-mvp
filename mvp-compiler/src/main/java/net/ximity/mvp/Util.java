@@ -94,7 +94,7 @@ final class Util {
 //        TypeMirror parameterTypes = mirror.getParameterTypes();
 //        TypeMirror typeOfE = processingEnv.getElementUtils().getTypeElement(E.class.getName()).asType();
 //        boolean isSubTypeOfE = processingEnv.getTypeUtils().isSubtype(parameterType, eventType)
-        TypeMirror viewPresenter = elementUtil.getTypeElement("net.ximity.mvp.contract.ViewPresenter").asType();
+        TypeMirror viewPresenter = elementUtil.getTypeElement("net.ximity.mvp.contract.MvpPresenter").asType();
         return typeUtil.isSubtype(type, viewPresenter);
     }
 
