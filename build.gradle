@@ -34,7 +34,7 @@ buildscript {
             'compile'       : 27,
             'build'         : '27.0.3',
             'support'       : '27.1.0',
-            'plugin'        : '3.1.1',
+            'plugin'        : '3.1.2',
 
             'bintray'       : '1.8.0',
             'dexcount'      : '0.8.2',
