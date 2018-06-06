@@ -24,6 +24,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -42,11 +43,14 @@ import static net.ximity.mvp.Util.writeJavaFile;
         "net.ximity.annotation.MvpContract",
 })
 @AutoService(Processor.class)
+@SupportedOptions(MvpProcessor.OUTPUT_FLAG)
 public final class MvpProcessor extends AbstractProcessor {
 
+    static final String OUTPUT_FLAG = "mvpDebugLogs";
     private final String TEMPLATE_PACKAGE = "net.ximity.mvp.template";
     private final String CONTRACT_PACKAGE = "net.ximity.mvp.contract";
     private boolean HALT = false;
+    private boolean shouldLog = false;
     private final List<Binding> bindings = new ArrayList<>();
 
     @Override
@@ -58,6 +62,8 @@ public final class MvpProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         Util.init(processingEnv);
+        String debugLogs = processingEnv.getOptions().get(OUTPUT_FLAG);
+        shouldLog = debugLogs != null && Boolean.parseBoolean(debugLogs);
     }
 
     @Override
@@ -201,7 +207,7 @@ public final class MvpProcessor extends AbstractProcessor {
         }
 
         writeJavaFile(JavaFile.builder(packageName, moduleBuilder.build())
-                .build(), moduleClassName);
+                .build(), moduleClassName, shouldLog);
 
         return true;
     }
@@ -260,7 +266,7 @@ public final class MvpProcessor extends AbstractProcessor {
         final JavaFile output = JavaFile.builder(packageName, mvpBindings)
                 .build();
 
-        writeJavaFile(output, componentName);
+        writeJavaFile(output, componentName, shouldLog);
         bindings.add(new Binding(packageName, componentName, moduleName));
         return true;
     }
@@ -307,7 +313,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .superclass(ParameterizedTypeName.get(application, ClassName.get(element)));
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, applicationBuilder.build())
-                .build(), "BaseMvpApplication");
+                .build(), "BaseMvpApplication", shouldLog);
 
         final ClassName activity = ClassName.get(TEMPLATE_PACKAGE, "MvpActivity");
         final TypeSpec.Builder activityBuilder = TypeSpec.classBuilder("BaseMvpActivity")
@@ -315,7 +321,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .superclass(ParameterizedTypeName.get(activity, ClassName.get(element)));
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, activityBuilder.build())
-                .build(), "BaseMvpActivity");
+                .build(), "BaseMvpActivity", shouldLog);
 
         final ClassName fragment = ClassName.get(TEMPLATE_PACKAGE, "MvpFragment");
         final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("BaseMvpFragment")
@@ -323,7 +329,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .superclass(ParameterizedTypeName.get(fragment, ClassName.get(element)));
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, fragmentBuilder.build())
-                .build(), "BaseMvpFragment");
+                .build(), "BaseMvpFragment", shouldLog);
 
         final ClassName dialog = ClassName.get(TEMPLATE_PACKAGE, "MvpDialog");
         final TypeSpec.Builder dialogBuilder = TypeSpec.classBuilder("BaseMvpDialog")
@@ -331,7 +337,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .superclass(ParameterizedTypeName.get(dialog, ClassName.get(element)));
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, dialogBuilder.build())
-                .build(), "BaseMvpDialog");
+                .build(), "BaseMvpDialog", shouldLog);
 
         final ClassName receiver = ClassName.get(TEMPLATE_PACKAGE, "MvpBroadcastReceiver");
         final TypeSpec.Builder receiverBuilder = TypeSpec.classBuilder("BaseMvpReceiver")
@@ -339,7 +345,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .superclass(ParameterizedTypeName.get(receiver, ClassName.get(element)));
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, receiverBuilder.build())
-                .build(), "BaseMvpReceiver");
+                .build(), "BaseMvpReceiver", shouldLog);
 
         final ClassName service = ClassName.get(TEMPLATE_PACKAGE, "MvpService");
         final TypeSpec.Builder serviceBuilder = TypeSpec.classBuilder("BaseMvpService")
@@ -347,7 +353,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .superclass(ParameterizedTypeName.get(service, ClassName.get(element)));
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, serviceBuilder.build())
-                .build(), "BaseMvpService");
+                .build(), "BaseMvpService", shouldLog);
 
         return true;
     }
@@ -481,7 +487,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addMethods(activityMethods);
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, activityBuilder.build())
-                .build(), "ActivityView");
+                .build(), "ActivityView", shouldLog);
 
         final ClassName fragmentView = ClassName.get(TEMPLATE_PACKAGE, "MvpFragment");
         final TypeSpec.Builder fragmentBuilder = TypeSpec.classBuilder("FragmentView")
@@ -493,7 +499,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addMethods(fragmentMethods);
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, fragmentBuilder.build())
-                .build(), "FragmentView");
+                .build(), "FragmentView", shouldLog);
 
         final ClassName dialogView = ClassName.get(TEMPLATE_PACKAGE, "MvpDialog");
         final TypeSpec.Builder dialogBuilder = TypeSpec.classBuilder("DialogView")
@@ -505,7 +511,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addMethods(fragmentMethods);
 
         writeJavaFile(JavaFile.builder(TEMPLATE_PACKAGE, dialogBuilder.build())
-                .build(), "DialogView");
+                .build(), "DialogView", shouldLog);
 
         return true;
     }
@@ -530,7 +536,7 @@ public final class MvpProcessor extends AbstractProcessor {
         final JavaFile output = JavaFile.builder(packageName, mvpBindings)
                 .build();
 
-        writeJavaFile(output, componentName);
+        writeJavaFile(output, componentName, shouldLog);
         return true;
     }
 }
