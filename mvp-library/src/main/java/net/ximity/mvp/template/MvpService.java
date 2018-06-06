@@ -21,7 +21,7 @@ public abstract class MvpService<M> extends Service {
     /**
      * Injects dependencies with global scope
      *
-     * @param mainComponent component to bind globally scoped dependencies
+     * @param component component to bind globally scoped dependencies
      */
-    protected abstract void bind(@NonNull M mainComponent);
+    protected abstract void bind(@NonNull M component);
 }

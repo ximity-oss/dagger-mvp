@@ -22,7 +22,7 @@ public abstract class MvpDialog<M> extends DialogFragment {
     /**
      * Injects dependencies with global scope
      *
-     * @param mainComponent component to bind globally scoped dependencies
+     * @param component component to bind globally scoped dependencies
      */
-    protected abstract void bind(@NonNull M mainComponent);
+    protected abstract void bind(@NonNull M component);
 }
