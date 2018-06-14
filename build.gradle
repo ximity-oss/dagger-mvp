@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.18.0'
     }
 
     ext {
@@ -34,9 +34,9 @@ buildscript {
             'compile'       : 27,
             'build'         : '27.0.3',
             'support'       : '27.1.1',
-            'plugin'        : '3.1.2',
+            'plugin'        : '3.1.3',
 
-            'bintray'       : '1.8.0',
+            'bintray'       : '1.8.1',
             'dexcount'      : '0.8.2',
             'maven'         : '2.1',
             'runtime'       : '4.1.1.4',
@@ -52,7 +52,7 @@ buildscript {
             'inject'        : '1',
             'robolectric'   : '3.1.2',
             'runner'        : '0.5',
-            'truth'         : '0.40',
+            'truth'         : '0.41',
     ]
 
     ext.groups = [
