@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.18.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.24.0'
     }
 
     ext {
@@ -30,12 +30,12 @@ buildscript {
     ext.versions = [
             'code'          : 1,
             'name'          : ext.libraryVersion,
-            'min'           : 15,
+            'min'           : 19,
             'compile'       : 28,
             'plugin'        : '3.5.0',
 
-            'bintray'       : '1.8.1',
-            'dexcount'      : '0.8.2',
+            'bintray'       : '1.8.4',
+            'dexcount'      : '0.8.6',
             'maven'         : '2.1',
             'runtime'       : '4.1.1.4',
 
@@ -45,9 +45,9 @@ buildscript {
                     'core'      : '1.1.0',
             ],
             'autocommon'    : '0.10',
-            'autoservice'   : '1.0-rc4',
+            'autoservice'   : '1.0-rc6',
             'compiletesting': '0.11',
-            'dagger'        : '2.16',
+            'dagger'        : '2.24',
             'javaparser'    : '2.4.0',
             'javapoet'      : '1.11.1',
             'javax'         : '1.3.2',
@@ -55,7 +55,7 @@ buildscript {
             'inject'        : '1',
             'robolectric'   : '3.1.2',
             'runner'        : '0.5',
-            'truth'         : '0.41',
+            'truth'         : '1.0',
     ]
 
     ext.groups = [
@@ -72,7 +72,7 @@ buildscript {
             'support'     : [
                     'appcompatv7': "androidx.appcompat:appcompat:${versions.androidx.appcompat}",
                     'compat'     : "androidx.core:core:${versions.androidx.core}",
-                    'annotations': "androidx.annotation:annotation:${versions.support}",
+                    'annotations': "androidx.annotation:annotation:${versions.androidx.annotation}",
                     'test'       : [
                             'runner': "com.android.support.test:runner:${versions.runner}",
                     ],

@@ -1,6 +1,5 @@
 package net.ximity.mvp;
 
-import com.google.auto.service.AutoService;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -41,7 +40,6 @@ import static net.ximity.mvp.Util.writeJavaFile;
         "net.ximity.annotation.MvpMainComponent",
         "net.ximity.annotation.MvpContract",
 })
-@AutoService(MvpProcessor.class)
 @SupportedOptions(MvpProcessor.OUTPUT_FLAG)
 public final class MvpProcessor extends AbstractProcessor {
 
@@ -62,7 +60,7 @@ public final class MvpProcessor extends AbstractProcessor {
         super.init(processingEnv);
         Util.init(processingEnv);
         String debugLogs = processingEnv.getOptions().get(OUTPUT_FLAG);
-        shouldLog = debugLogs != null && Boolean.parseBoolean(debugLogs);
+        shouldLog = Boolean.parseBoolean(debugLogs);
     }
 
     @Override
