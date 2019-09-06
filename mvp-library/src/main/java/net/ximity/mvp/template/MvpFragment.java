@@ -1,8 +1,9 @@
 package net.ximity.mvp.template;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
  * Base fragment with dependency injection from the Global Object Graph

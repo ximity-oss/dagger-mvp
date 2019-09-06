@@ -1,7 +1,8 @@
 package net.ximity.mvp.template;
 
 import android.app.Service;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Base Service with dependency injection from the Global Object Graph

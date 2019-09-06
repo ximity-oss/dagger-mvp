@@ -2,7 +2,6 @@ package net.ximity.sample.login.mvp;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import net.ximity.annotation.MvpScope;
@@ -10,6 +9,8 @@ import net.ximity.sample.R;
 import net.ximity.sample.login.LoginActivity;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
 
 /**
  * Sample login presenter implementation

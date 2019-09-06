@@ -2,10 +2,10 @@ package net.ximity.sample;
 
 import android.app.Application;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 
@@ -18,21 +18,21 @@ import dagger.Provides;
 public final class MainModule {
 
     /** Application **/
-    private final Application mApplication;
+    private final Application mt;
 
     MainModule(@NonNull Application application) {
-        mApplication = application;
+        mt = application;
     }
 
     @Provides
     @Singleton
     Application providesApplication() {
-        return mApplication;
+        return mt;
     }
 
     @Provides
     @Singleton
     Resources providesResources() {
-        return mApplication.getResources();
+        return mt.getResources();
     }
 }

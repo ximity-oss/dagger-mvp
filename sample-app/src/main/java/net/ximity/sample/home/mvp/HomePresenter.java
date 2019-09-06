@@ -2,8 +2,6 @@ package net.ximity.sample.home.mvp;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import net.ximity.annotation.MvpScope;
@@ -11,6 +9,9 @@ import net.ximity.sample.R;
 import net.ximity.sample.home.HomeActivity;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Home presenter implementation

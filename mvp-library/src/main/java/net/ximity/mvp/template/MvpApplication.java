@@ -2,7 +2,8 @@ package net.ximity.mvp.template;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Base application with dependency injection methods

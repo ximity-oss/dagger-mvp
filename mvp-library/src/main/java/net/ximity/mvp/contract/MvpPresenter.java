@@ -2,10 +2,11 @@ package net.ximity.mvp.contract;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 /**
  * Base view presenter contract with hooks to view lifecycle
@@ -15,7 +16,8 @@ import android.view.View;
 public interface MvpPresenter {
 
     /**
-     * Lifecycle callback bound to {@link Activity#onCreate(Bundle)} or {@link Fragment#onViewCreated(View, Bundle)}
+     * Lifecycle callback bound to {@link Activity#onCreate(Bundle)} or
+     * {@link Fragment#onViewCreated(View, Bundle)}
      *
      * @param saved saved state bundle, non-null if view was previously recreated
      */

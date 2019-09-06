@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -42,7 +41,7 @@ import static net.ximity.mvp.Util.writeJavaFile;
         "net.ximity.annotation.MvpMainComponent",
         "net.ximity.annotation.MvpContract",
 })
-@AutoService(Processor.class)
+@AutoService(MvpProcessor.class)
 @SupportedOptions(MvpProcessor.OUTPUT_FLAG)
 public final class MvpProcessor extends AbstractProcessor {
 
@@ -178,7 +177,7 @@ public final class MvpProcessor extends AbstractProcessor {
                         .build())
                 .addMethod(MethodSpec.constructorBuilder()
                         .addParameter(ParameterSpec.builder(ClassName.get(viewInterface), "view")
-                                .addAnnotation(ClassName.get("android.support.annotation", "NonNull"))
+                                .addAnnotation(ClassName.get("androidx.annotation", "NonNull"))
                                 .build())
                         .addModifiers(Modifier.PUBLIC)
                         .addStatement("this.$N = $N", "view", "view")
@@ -254,7 +253,7 @@ public final class MvpProcessor extends AbstractProcessor {
                         .addMember("modules", "$N.class", moduleName)
                         .build())
                 .addMethod(MethodSpec.methodBuilder("bind")
-                        .addAnnotation(AnnotationSpec.builder(com.squareup.javapoet.ClassName.get("android.support.annotation", "CheckResult"))
+                        .addAnnotation(AnnotationSpec.builder(com.squareup.javapoet.ClassName.get("androidx.annotation", "CheckResult"))
                                 .addMember("suggest", "\"#bindPresenter(net.ximity.mvp.contract.MvpPresenter)\"")
                                 .build())
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -361,7 +360,6 @@ public final class MvpProcessor extends AbstractProcessor {
     private boolean generateBaseViews(TypeElement element) {
         List<MethodSpec> activityMethods = new ArrayList<>();
 
-
         activityMethods.add(MethodSpec.methodBuilder("bindPresenter")
                 .addModifiers(Modifier.PROTECTED)
                 .addParameter(ClassName.get(CONTRACT_PACKAGE, "MvpPresenter"), "presenter")
@@ -372,7 +370,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PROTECTED)
                 .addAnnotation(Override.class)
                 .addParameter(ParameterSpec.builder(ClassName.get("android.os", "Bundle"), "savedInstanceState")
-                        .addAnnotation(ClassName.get("android.support.annotation", "Nullable"))
+                        .addAnnotation(ClassName.get("androidx.annotation", "Nullable"))
                         .build())
                 .addStatement("super.onCreate(savedInstanceState)")
                 .addStatement("if(mPresenter == null) throw new IllegalStateException(\"Presenter is null!!! Call bindPresenter(MvpPresenter)\")")
@@ -390,7 +388,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PROTECTED)
                 .addAnnotation(Override.class)
                 .addParameter(ParameterSpec.builder(ClassName.get("android.os", "Bundle"), "outState")
-                        .addAnnotation(ClassName.get("android.support.annotation", "NonNull"))
+                        .addAnnotation(ClassName.get("androidx.annotation", "NonNull"))
                         .build())
                 .addStatement("super.onSaveInstanceState(outState)")
                 .addStatement("mPresenter.saveState(outState)")
@@ -429,10 +427,10 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .addParameter(ParameterSpec.builder(ClassName.get("android.view", "View"), "view")
-                        .addAnnotation(ClassName.get("android.support.annotation", "NonNull"))
+                        .addAnnotation(ClassName.get("androidx.annotation", "NonNull"))
                         .build())
                 .addParameter(ParameterSpec.builder(ClassName.get("android.os", "Bundle"), "savedInstanceState")
-                        .addAnnotation(ClassName.get("android.support.annotation", "Nullable"))
+                        .addAnnotation(ClassName.get("androidx.annotation", "Nullable"))
                         .build())
                 .addStatement("super.onCreate(savedInstanceState)")
                 .addStatement("if(mPresenter == null) throw new IllegalStateException(\"Presenter is null!!! Call bindPresenter(MvpPresenter)\")")
@@ -450,7 +448,7 @@ public final class MvpProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .addParameter(ParameterSpec.builder(ClassName.get("android.os", "Bundle"), "outState")
-                        .addAnnotation(ClassName.get("android.support.annotation", "NonNull"))
+                        .addAnnotation(ClassName.get("androidx.annotation", "NonNull"))
                         .build())
                 .addStatement("super.onSaveInstanceState(outState)")
                 .addStatement("mPresenter.saveState(outState)")

@@ -2,7 +2,6 @@ package net.ximity.sample.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +15,8 @@ import net.ximity.sample.login.mvp.LoginContract;
 import net.ximity.sample.login.mvp.LoginContractModule;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
 
 public final class LoginActivity extends ActivityView
         implements LoginContract.View {

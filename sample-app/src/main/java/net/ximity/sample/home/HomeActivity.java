@@ -1,7 +1,6 @@
 package net.ximity.sample.home;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +13,8 @@ import net.ximity.sample.home.mvp.HomeContract;
 import net.ximity.sample.home.mvp.HomeContractModule;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
 
 public final class HomeActivity extends ActivityView
         implements HomeContract.View {

@@ -3,7 +3,6 @@ apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion versions.compile
-    buildToolsVersion versions.build
 
     defaultConfig {
         applicationId "net.ximity.sample"

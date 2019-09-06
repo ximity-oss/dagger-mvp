@@ -3,7 +3,8 @@ package net.ximity.mvp.template;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Base broadcast receiver with dependency injection from the Global Object Graph
